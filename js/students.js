@@ -17,7 +17,7 @@
          * Добавляет студента
          * @param {String} firstName - имя студента.
          * @param {String} lastName - фамилия студента.
-         * @return {Number} возвращает положение в массиве студентов. 
+         * @return {Number} возвращает индекс в массиве студентов. 
          */
         add: function(firstName, lastName) {
             this._students.push(new Student(firstName, lastName));
@@ -239,17 +239,27 @@
         /**
          * Создает задачу
          * @param {String} tasksName - Наиманование задачи.
+         * @param {String} description - Подробное описание задачи.
+         * @return {Number} Возвращает индекс в массиве _tasks.
          */
-        create: function(tasksName) {
-            this._tasks.push(tasksName);
+        create: function(taskName, description) {
+            this._tasks.push(new Task(taskName, description));
+            return this._tasks.length - 1;
         }
     };
+
+    function Task(taskName, description) {
+        this.taskName = taskName;
+        this.description = description;
+    }
 
     window.SHRI = {
         Students: Students,
         Student: Student,
         Teams: Teams,
-        Team: Team
+        Team: Team,
+        Tasks: Tasks,
+        Task: Task
     };
 
 }());
