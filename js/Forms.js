@@ -3,9 +3,16 @@ $('.form-student').on('submit', function(event) {
     var firstName = $('.form-student__firstName').val();
     var lastName = $('.form-student__lastName').val();
     var id = SHRI.Students.add(firstName, lastName);
-    $('<option value=' + id + '>' + firstName + ' ' + lastName + '</option>')
-        .appendTo('.create-teams__select');
+
     event.preventDefault();
+    $(this).trigger('student:added', id);
+});
+
+$('.form-student').on('student:added', function(event, id) {
+    var student = SHRI.Students.find(id);
+
+    $('<option value=' + id + '>' + student.firstName + ' ' + student.lastName + '</option>')
+        .appendTo('.create-teams__select');
 });
 
 SHRI.Students.add('Вася', 'Васечкин');
