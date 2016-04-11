@@ -59,11 +59,17 @@
             </div>
             <div class="col-md-4">
                 <h3>Создание задачи</h3>
-                <form role="form" class="create-tasks">
+                <form role="form" class="create-task">
                     <div class="form-group">
                         <label>
-                            Введите условие задачи:
-                            <input name="team-name" class="form-control create-tasks__team-name" />
+                            Введите наименование задачи:
+                            <input name="team-name" class="form-control create-task__team-name" />
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            Введите подробное описание задачи:
+                            <textarea name="team-name" class="form-control create-task__description"></textarea>
                         </label>
                     </div>
                     <button type="submit" class="btn btn-default">Создать задачу</button>
@@ -72,27 +78,32 @@
         </div>
 
         <div class="row">
-            <div class="col-md-4">
-                <h3>Распределение задач по командам.</h3>
-                <form role="form" class="assign-task">
+            <form role="form" class="assign-task">
+                <h2>Распределение задач по командам и студентам.</h2>
+                <div class="col-md-4">
                     <div class="form-group">
                         <label>
                             Выберите задачу
                             <select class="form-control assign-task__select"></select>
                         </label>
                     </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group assign-task__content">
+                        Выберите команду
+                    </div>
+                </div>
+                <div class="col-md-4">
                     <div class="form-group">
                         <label>
-                            Выберите команду или студента
-                            <fieldset>
-                            </fieldset>
+                            Выберите студента
+                            <! создать чекбоксы студентов-->
                         </label>
                     </div>
-                    <button type="submit" class="btn btn-default">Назначить задачу</button>
-                </form>
-            </div>
-            <div class="col-md-4"></div>
-            <div class="col-md-4"></div>
+
+                </div>
+
+            </form>
         </div>
 
 

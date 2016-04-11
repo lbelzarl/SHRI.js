@@ -1,5 +1,3 @@
-'use strict'
-
 
 $('.form-student').on('submit', function(event) {
     var firstName = $('.form-student__firstName').val();
@@ -59,66 +57,38 @@ $('.create-teams').on('submit', function(event) {
         team = SHRI.Teams.create(teamName);
 
     if (team) {
-        fieldset.appendChild(
-            addCheckBox(SHRI.Teams._teams[SHRI.Teams._teams.length - 1].teamName, SHRI.Teams._teams.length - 1, 'legend')
-        );
+        var teamId = SHRI.Teams.getTeamId(team);
+
+        $('<legend>' +
+              SHRI.Teams._teams[SHRI.Teams._teams.length - 1].teamName +
+              '<input type="checkbox" value=' + teamId + '/>' +
+          '</legend>')
+        .appendTo('.assign-task__content');
+
+        var membersList = $('<ul class="create-teams__ul"></ul>');
 
         Object.keys(studentsToAdd).forEach(function(studentId) {
             var student = SHRI.Students.find(+studentId);
             team.addMember(student);
-
-            fieldset.appendChild(
-                addCheckBox(student.fullName, studentId, 'label')
-            );
+            membersList.append('<li>' + student.fullName + '</li>') 
         });
+
+        membersList.appendTo('.assign-task__content');
     } else {
         alert('Ошибка при создании команды, т.к.\n' + 'такая команда уже есть.');
     }
 });
 
-
-
-var form3 = document.querySelector('.create-tasks');
-form3.addEventListener('submit', function(event) {
-
-    // TODO: перевести на SHRI.*
-
-    var select = document.getElementById('tasks');
-    var tasksName = event.target.elements[0].value;
-    Tasks.create(tasksName);
-    var opt = document.createElement('option');
-    opt.value = Tasks._tasks.length - 1;
-    opt.innerHTML = Tasks._tasks[Tasks._tasks.length - 1];
-    select.appendChild(opt);
-
-
+$('.create-task').on('submit', function(event) {
     event.preventDefault();
+    var taskName = $('.create-task__team-name').val();
+    var description = $('.create-task__description').val();
+    var id = SHRI.Tasks.create(taskName, description);
+    $('<option value=' + id + '>' + taskName + '</option>')
+        .appendTo('.assign-task__select');
+
+
 });
 
-var form4 = document.querySelector('.assign-task');
-form4.addEventListener('submit', function(event) {
-
-    var options = event.target.elements[0].options;
-
-    _.find(options, function() {
-
-    })
 
 
-    for (let i = 0; i < event.target.elements[0].options.length; i++) {
-        if (event.target.elements[0].options[i].selected)
-            var task = (event.target.elements[0].options[i].value);
-    };
-
-    let checkboxes = form4.getElementsByTagName('input');
-    for (let i = 0; i < checkboxes.length; i++) {
-        if (checkboxes[i].checked) {
-            Students.find(checkboxes[i].value).tasks.push({
-                task: task,
-                mark: null
-            });
-        };
-    };
-
-    event.preventDefault();
-});
