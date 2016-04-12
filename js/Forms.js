@@ -130,7 +130,7 @@ $('.create-teams').on('submit', function(event) {
               '<input type="checkbox" value="' + teamId + '"/>' +
                SHRI.Teams._teams[SHRI.Teams._teams.length - 1].teamName +
           '</legend>')
-        .appendTo('.assign-task__content');
+        .appendTo('.assign-task__content-teams');
 
         var membersList = $('<ul class="create-teams__ul"></ul>');
 
@@ -140,7 +140,7 @@ $('.create-teams').on('submit', function(event) {
             membersList.append('<li>' + student.fullName + '</li>') 
         });
 
-        membersList.appendTo('.assign-task__content');
+        membersList.appendTo('.assign-task__content-teams');
     } else {
         alert('Ошибка при создании команды, т.к.\n' + 'такая команда уже есть.');
     }
@@ -156,13 +156,25 @@ $('.create-task').on('submit', function(event) {
 });
 
 
-
-/*$('.assign-task').on('submit', function(event) {
+$('.assign-task').on('submit', function(event) {
     event.preventDefault();
-    var task = $('.assign-task__select').val();
-    vat teamId = 
+    var taskId = $('.assign-task__select').val();
+    var task = SHRI.Tasks.get(+taskId);
 
+    var teamId = [];
+    $('.assign-task__content-teams input:checked').each(function(i, checked) {
+        teamId.push(checked.value)});
+    for (var i = 0; i < teamId.length; i++) {
+        var team = SHRI.Teams.find(+teamId[i]);
+        team.tasks.push(task);
+    }
 
-
-})*/
+    var studentId = [];
+    $('.assign-task__content-students input:checked').each(function(i, checked) {
+    studentId.push(checked.value)});
+    for (var i = 0; i < studentId.length; i++) {
+        var student = SHRI.Students.find(+studentId[i]);
+        student.tasks.push(task);
+    }
+});
 

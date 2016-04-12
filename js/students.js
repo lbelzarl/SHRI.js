@@ -175,6 +175,7 @@
     function Team(teamName) {
         this.teamName = teamName;
         this._members = [];
+        this.tasks = [];
     };
 
     /**
@@ -245,6 +246,15 @@
         create: function(taskName, description) {
             this._tasks.push(new Task(taskName, description));
             return this._tasks.length - 1;
+        },
+
+        /**
+         * Возвращает задачу
+         * @param  {Number} taskId Индекс задачи в массиве _tasks.
+         * @return {Task} Задача.
+         */
+        get: function(taskId) {
+            return this._tasks[taskId];
         }
     };
 
