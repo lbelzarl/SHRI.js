@@ -14,10 +14,8 @@
 
     <p></p>
     
-
-
     <div class="container theme-showcase" role="main">
-
+        <button type="submit" class="btn btn-default download">Загрузить данные</button>
         <div class="row">
             <h2>Работа с данными</h2>
             <div class="col-md-4">
@@ -35,7 +33,7 @@
                             <input name="lastName" class="form-control form-student__lastName" />
                         </label>
                     </div>
-                    <button type="submit" class="btn btn-default form-student__submit">Добавить студента</button>
+                    <button type="submit" class="btn form-student__button">Добавить студента</button>
                 </form>
             </div>
             <div class="col-md-4">
@@ -54,7 +52,7 @@
                             </select>
                         </label>
                     </div>
-                    <button type="submit" class="btn btn-default">Создать команду</button>
+                    <button type="submit" class="btn create-teams__button">Создать команду</button>
                 </form>
             </div>
             <div class="col-md-4">
@@ -72,7 +70,7 @@
                             <textarea name="team-name" class="form-control create-task__description"></textarea>
                         </label>
                     </div>
-                    <button type="submit" class="btn btn-default">Создать задачу</button>
+                    <button type="submit" class="btn create-task__button">Создать задачу</button>
                 </form>
             </div>
         </div>
@@ -95,14 +93,11 @@
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label>
-                            Выберите студента
-                            <! создать чекбоксы студентов-->
-                        </label>
+                        Выберите студента
+                        <ul class="assign-task__ul-students"></ul>
                     </div>
-
                 </div>
-
+                <button type="submit" class="btn btn-default">Назначить задачу</button>
             </form>
         </div>
 

@@ -1,3 +1,64 @@
+$('.download').on('click', function() {
+    //Загружаем список студентов
+    $('.form-student__firstName').val('Вася');
+    $('.form-student__lastName').val('Васечкин');
+    $('.form-student__button').click();
+
+    $('.form-student__firstName').val('Петя');
+    $('.form-student__lastName').val('Петячкин');
+    $('.form-student__button').click();
+
+    $('.form-student__firstName').val('Коля');
+    $('.form-student__lastName').val('Колечкин');
+    $('.form-student__button').click();
+
+    $('.form-student__firstName').val('Юля');
+    $('.form-student__lastName').val('Юличкина');
+    $('.form-student__button').click();
+
+    $('.form-student__firstName').val('Маша');
+    $('.form-student__lastName').val('Машечкина');
+    $('.form-student__button').click();
+
+    $('.form-student__firstName').val('Валя');
+    $('.form-student__lastName').val('Валечкина');
+    $('.form-student__button').click();
+
+    //Создаем команды и групперуем студентов по командам.
+    $('.create-teams__name').val('Орлы');
+    $('.create-teams__select [value="0"]').attr('selected', 'selected');
+    $('.create-teams__select [value="1"]').attr('selected', 'selected');
+    $('.create-teams__button').click();
+    $('.create-teams__select [value="0"]').removeAttr('selected');
+    $('.create-teams__select [value="1"]').removeAttr('selected');
+
+    $('.create-teams__name').val('Соколы');
+    $('.create-teams__select [value="2"]').attr('selected', 'selected');
+    $('.create-teams__select [value="3"]').attr('selected', 'selected');
+    $('.create-teams__button').click();
+    $('.create-teams__select [value="2"]').removeAttr('selected');
+    $('.create-teams__select [value="3"]').removeAttr('selected');
+
+    $('.create-teams__name').val('Инвалиды');
+    $('.create-teams__select [value="4"]').attr('selected', 'selected');
+    $('.create-teams__select [value="5"]').attr('selected', 'selected');
+    $('.create-teams__button').click();
+
+    // Загружаем список задач.
+    $('.create-task__team-name').val('Задача1');
+    $('.create-task__description').val('Подпрыгнуть 10 раз');
+    $('.create-task__button').click();
+
+    $('.create-task__team-name').val('Задача2');
+    $('.create-task__description').val('Подпрыгнуть 20 раз');
+    $('.create-task__button').click();
+
+    $('.create-task__team-name').val('Задача3');
+    $('.create-task__description').val('Подпрыгнуть 30 раз');
+    $('.create-task__button').click();
+
+});
+
 
 $('.form-student').on('submit', function(event) {
     var firstName = $('.form-student__firstName').val();
@@ -11,16 +72,15 @@ $('.form-student').on('submit', function(event) {
 $('.form-student').on('student:added', function(event, id) {
     var student = SHRI.Students.find(id);
 
-    $('<option value=' + id + '>' + student.firstName + ' ' + student.lastName + '</option>')
+    $('<option value="' + id + '">' + student.fullName + '</option>')
         .appendTo('.create-teams__select');
+
+        $('<li type="none"><label><input type="checkbox" value="' + id + '"/>' + student.fullName + '</label></li>')
+        .appendTo('.assign-task__ul-students');
+
 });
 
-SHRI.Students.add('Вася', 'Васечкин');
-SHRI.Students.add('Петя', 'Петячкин');
-SHRI.Students.add('Коля', 'Колечкин');
-$('<option value="0">Вася Васечкин</option>').appendTo('.create-teams__select');
-$('<option value="1">Петя Петячкин</option>').appendTo('.create-teams__select');
-$('<option value="2">Коля Колечкин</option>').appendTo('.create-teams__select');
+
 
 
 var fieldset = document.querySelector('fieldset');
@@ -67,8 +127,8 @@ $('.create-teams').on('submit', function(event) {
         var teamId = SHRI.Teams.getTeamId(team);
 
         $('<legend>' +
-              SHRI.Teams._teams[SHRI.Teams._teams.length - 1].teamName +
-              '<input type="checkbox" value=' + teamId + '/>' +
+              '<input type="checkbox" value="' + teamId + '"/>' +
+               SHRI.Teams._teams[SHRI.Teams._teams.length - 1].teamName +
           '</legend>')
         .appendTo('.assign-task__content');
 
@@ -93,9 +153,16 @@ $('.create-task').on('submit', function(event) {
     var id = SHRI.Tasks.create(taskName, description);
     $('<option value=' + id + '>' + taskName + '</option>')
         .appendTo('.assign-task__select');
-
-
 });
 
 
+
+/*$('.assign-task').on('submit', function(event) {
+    event.preventDefault();
+    var task = $('.assign-task__select').val();
+    vat teamId = 
+
+
+
+})*/
 
