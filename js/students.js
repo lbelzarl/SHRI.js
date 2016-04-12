@@ -59,6 +59,15 @@
             } else {
                 this._students.splice(id, 1);
             }
+        },
+
+        /**
+         * Возвращает массив менторов в которых заинтересован студент
+         * @param  {Student} student - Студент
+         * @return {Array} Массив менторов заинтересовавших студента.
+         */
+        getMentorsStudent: function(student) {
+            return student.mentors;
         }
     };
 
@@ -72,6 +81,7 @@
         this.lastName = lastName;
         this.fullName = firstName + ' ' + lastName;
         this.tasks = [];
+        this.mentors = [];
     }
 
     //------------------Команды----------------------------------------------
@@ -262,6 +272,84 @@
         this.taskName = taskName;
         this.description = description;
     }
+
+//---------------Менторы------------------------------
+
+    var Mentors = {
+
+        /**
+         * Внутренний массив для хранения менторов
+         * @type {Array}
+         * @private
+         */
+        _mentors: [],
+
+        /**
+         * Добавляет менторов в массив _mentors
+         * @param {String} firstName Имя
+         * @param {String} lastName Фамилие
+         */
+        add: function(firstName, lastName) {
+            this._mentors.push(new Student(firstName, lastName));
+            return this._students.length - 1;
+        },
+
+        /**
+         * Возвращает ментора
+         * @param  {Number} индекс массива _mentors
+         * @return {Mentor}   
+         */
+        find: function(id) {
+            return this._mentors[id];
+        },
+
+        /**
+         * Возвращает индекс ментора в массиве _mentors.
+         * @param {Mentor} mentor - Ментор.
+         * @return {Number|Null} - Возвращает индекс ментора в массиве _mentors
+         *                                                 а при его отсутствии - null.
+         */
+        getId: function(mentor) {
+            for (var i = 0; i < this._mentors.length; i++) {
+                if (mentor === this._mentors[i]) {
+                    return i;
+                }
+            }
+            return null;
+        },
+
+        /**
+         * При вызове без переметров удаляет всех менторов,
+         * иначе удаляет указанного ментора. 
+         * @param {Number} [id] - индекс ментора в массиве __mentors.
+         */
+        delete: function(id) {
+            if (id === undefined) {
+                this._mentors = [];
+            } else {
+                this._mentors.splice(id, 1);
+            }
+        },
+
+        /**
+         * Возвращает студентов в которых заинтересован ментор
+         * @param  {Mentor} mentor - Ментор
+         * @return {Array} Массив студентов заинтересовавших ментора.
+         */
+        getStudensMontor: function(mentor) {
+            return mentor.students;
+        }
+    };
+
+    function Mentor(firstName, lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.fullName = firstName + ' ' + lastName;
+        this.students = [];
+    }
+
+
+
 
     window.SHRI = {
         Students: Students,
