@@ -155,18 +155,32 @@ $('.create-task').on('submit', function(event) {
         .appendTo('.assign-task__select');
 });
 
-
 $('.assign-task').on('submit', function(event) {
     event.preventDefault();
-    var taskId = $('.assign-task__select').val();
-    var task = SHRI.Tasks.get(+taskId);
+    var taskId = +$('.assign-task__select').val();
+    var task = SHRI.Tasks.get(taskId);
 
     var teamId = [];
     $('.assign-task__content-teams input:checked').each(function(i, checked) {
         teamId.push(checked.value)});
     for (var i = 0; i < teamId.length; i++) {
         var team = SHRI.Teams.find(+teamId[i]);
-        team.tasks.push(task);
+        team.tasks.push({
+            task: task,
+            mark: null
+        });
+
+        $('<div class="task-container">' + 
+                '<p data-task="' + taskId + '">' + task.taskName + '</p>' + 
+                '<p data-team="' + +teamId[i] + '">' + team.teamName + '</p>' +
+                '<div class="input-group">' +
+                    '<input type="text" class="form-control mark-task__mark">' +
+                    '<div class="input-group-btn">' +
+                        '<button type="submit" class="btn mark-task__button-team">Оценить</button>' +
+                    '</div>' +
+                '</div>' +
+          '</div>')
+        .appendTo('.mark-task');
     }
 
     var studentId = [];
@@ -174,7 +188,100 @@ $('.assign-task').on('submit', function(event) {
     studentId.push(checked.value)});
     for (var i = 0; i < studentId.length; i++) {
         var student = SHRI.Students.find(+studentId[i]);
-        student.tasks.push(task);
+        student.tasks.push({
+            task: task,
+            mark: null
+        });
+
+        $('<div class="task-container">' + 
+            '<p data-task="' + taskId + '">' + task.taskName + '</p>' + 
+            '<p data-team="' + +studentId[i] + '">' + student.fullName + '</p>' +
+            '<div class="input-group">' +
+                '<input type="text" class="form-control mark-task__mark">' +
+                '<div class="input-group-btn">' +
+                    '<button type="submit" class="btn mark-task__button-student">Оценить</button>' +
+                '</div>' +
+            '</div>' +
+          '</div>')
+        .appendTo('.mark-task');
+    }
+
+});
+
+$(document.body).on('click', '.mark-task__button-team', function(e) {
+    e.preventDefault();
+    var button = $(this),
+        mark = button.parent().prev(),
+        teamId = button.parent().parent().prev(),
+        taskId = teamId.prev(),
+        team = SHRI.Teams.find(+teamId.attr('data-team')),
+        task = SHRI.Tasks.get(+taskId.attr('data-task'));
+
+    for (var i = 0; i < team.tasks.length; i++) {
+        if (task.taskName == team.tasks[i].task.taskName) {
+            team.tasks[i].mark = mark.val();
+        }
     }
 });
 
+$(document.body).on('click', '.mark-task__button-student', function(e) {
+    e.preventDefault();
+    var button = $(this),
+        mark = button.parent().prev(),
+        studentId = button.parent().parent().prev(),
+        taskId = studentId.prev(),
+        student = SHRI.Students.find(+studentId.attr('data-team')),
+        task = SHRI.Tasks.get(+taskId.attr('data-task'));
+
+    for (var i = 0; i < student.tasks.length; i++) {
+        if (task.taskName == student.tasks[i].task.taskName) {
+            student.tasks[i].mark = mark.val();
+        }
+    }
+});
+
+
+
+
+
+
+
+/*
+$('.form-mentor').on('submit', function(event) {
+    var firstName = $('.form-mentor__firstName').val();
+    var lastName = $('.form-mentor__lastName').val();
+    var id = SHRI.Mentors.add(firstName, lastName);
+
+    event.preventDefault();
+    $(this).trigger('student:added', id);
+});
+
+$('.form-student').on('student:added', function(event, id) {
+    var student = SHRI.Students.find(id);
+
+    $('<option value="' + id + '">' + student.fullName + '</option>')
+        .appendTo('.create-teams__select');
+
+        $('<li type="none"><label><input type="checkbox" value="' + id + '"/>' + student.fullName + '</label></li>')
+        .appendTo('.assign-task__ul-students');
+
+});
+
+
+var mentors = SHRI.Mentors.getAll(),
+    students = SHRI.Students.getAll();
+
+for (var i = 0; i < mentors.length; i++) {
+    var mentor = mentors[i];
+    var mentorStudents = mentor.getStudents();
+    for (var j = 0; j < mentorStudents.length; j++) {
+        var studentMentors = mentorStudents[i].getMentors();
+
+        if (studentMentors.indexOf(mentor) >= 0) {
+            // нашлось
+            // 
+            // 
+            // array.push({ mentor: mentor, student: mentorStudents[i] });
+        }
+    }
+}*/

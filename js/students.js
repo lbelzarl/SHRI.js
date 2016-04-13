@@ -34,6 +34,14 @@
         },
 
         /**
+         * Возвращает массив студентов
+         * @return {Array}
+         */
+        getAll: function() {
+            return this._students;
+        },
+
+        /**
          * Возвращает индекс студента в массиве _students.
          * @param {Student} student - Студент.
          * @return {Number|Null} - Возвращает индекс студента в массиве _students
@@ -59,15 +67,6 @@
             } else {
                 this._students.splice(id, 1);
             }
-        },
-
-        /**
-         * Возвращает массив менторов в которых заинтересован студент
-         * @param  {Student} student - Студент
-         * @return {Array} Массив менторов заинтересовавших студента.
-         */
-        getMentorsStudent: function(student) {
-            return student.mentors;
         }
     };
 
@@ -81,7 +80,15 @@
         this.lastName = lastName;
         this.fullName = firstName + ' ' + lastName;
         this.tasks = [];
-        this.mentors = [];
+        this._mentors = [];
+    }
+
+    /**
+     * Возвращает массив менторов в которых заинтересован студент
+     * @return {Array} - Массив менторов заинтересовавших студента.
+     */
+    Student.prototype.getMentors = function() {
+        return this._mentors;
     }
 
     //------------------Команды----------------------------------------------
@@ -285,9 +292,18 @@
         _mentors: [],
 
         /**
-         * Добавляет менторов в массив _mentors
+         * Возвращает массив менторов
+         * @return {Array}
+         */
+        getAll: function() {
+            return this._mentors;
+        },
+
+        /**
+         * Добавляет ментора в массив _mentors
          * @param {String} firstName Имя
          * @param {String} lastName Фамилие
+         * @return {Number} Возвращает индекс в массиве _mentors
          */
         add: function(firstName, lastName) {
             this._mentors.push(new Student(firstName, lastName));
@@ -329,15 +345,6 @@
             } else {
                 this._mentors.splice(id, 1);
             }
-        },
-
-        /**
-         * Возвращает студентов в которых заинтересован ментор
-         * @param  {Mentor} mentor - Ментор
-         * @return {Array} Массив студентов заинтересовавших ментора.
-         */
-        getStudensMontor: function(mentor) {
-            return mentor.students;
         }
     };
 
@@ -345,7 +352,15 @@
         this.firstName = firstName;
         this.lastName = lastName;
         this.fullName = firstName + ' ' + lastName;
-        this.students = [];
+        this._students = [];
+    }
+
+    /**
+     * Возвращает студентов в которых заинтересован ментор
+     * @return {Array} - Массив студентов заинтересовавших ментора.
+     */
+    Mentor.prototype.getStudents = function() {
+        return this._students;
     }
 
 
@@ -357,7 +372,9 @@
         Teams: Teams,
         Team: Team,
         Tasks: Tasks,
-        Task: Task
+        Task: Task,
+        Mentors: Mentors,
+        Mentor: Mentor
     };
 
 }());
