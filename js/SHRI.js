@@ -79,15 +79,26 @@
 
             for (var i = 0; i < students.length; i++) {
                 var randomMentorsIndex = Math.floor(Math.random() * mentors.length);
-                students[i]._mentors.push(mentors[randomMentorsIndex]);
+                students[i].addMentor(mentors[randomMentorsIndex]);
 
                 while (true) {
                     var nextRandomMentorsIndex = Math.floor(Math.random() * mentors.length);
                     if (randomMentorsIndex !== nextRandomMentorsIndex) {
-                        students[i]._mentors.push(mentors[nextRandomMentorsIndex]);
+                        students[i].addMentor(mentors[nextRandomMentorsIndex]);
                         break;
                     }
                 }
+            }
+        },
+
+        /**
+         * Очищает всех выбранных менторов у всех студентов
+         */
+        emptyAllMentors: function() {
+            var students = this._students;
+
+            for (var i = 0; i < students.length; i++) {
+                students[i].emptyMentors();
             }
         }
     };
@@ -106,11 +117,26 @@
     }
 
     /**
+     * Добавляет ментора в массив менторов в которых заинтересован студент
+     * @param {Mentor} mentor - ментор
+     */
+    Student.prototype.addMentor = function(mentor) {
+        this._mentors.push(mentor);
+    }
+
+    /**
      * Возвращает массив менторов в которых заинтересован студент
      * @return {Array} - Массив менторов заинтересовавших студента.
      */
     Student.prototype.getMentors = function() {
         return this._mentors;
+    }
+
+    /**
+     * Очищает массив менторов в которых заинтересован студент
+     */
+    Student.prototype.emptyMentors = function() {
+        this._mentors = [];
     }
 
     //------------------Команды----------------------------------------------
@@ -379,11 +405,11 @@
 
             for (var i = 0; i < mentors.length; i++) {
                 var randomStudentIndex = Math.floor(Math.random() * students.length);
-                mentors[i]._students.push(students[randomStudentIndex]);
+                mentors[i].addStudent(students[randomStudentIndex]);
                 while (true) {
                     var nextRandomStudentIndex = Math.floor(Math.random() * students.length);
                     if (randomStudentIndex !== nextRandomStudentIndex) {
-                        mentors[i]._students.push(students[nextRandomStudentIndex]);
+                        mentors[i].addStudent(students[nextRandomStudentIndex]);
                         break;
                     }
                 }
@@ -399,11 +425,26 @@
     }
 
     /**
+     * Добавляет студента, в котором заинтересован ментор
+     * @param {Student} student - студент
+     */
+    Mentor.prototype.addStudent = function(student) {
+        this._students.push(student);
+    }
+
+    /**
      * Возвращает студентов в которых заинтересован ментор
      * @return {Array} - Массив студентов заинтересовавших ментора.
      */
     Mentor.prototype.getStudents = function() {
         return this._students;
+    }
+
+    /**
+     * Очищает массив студентов в которых заинтересован ментор
+     */
+    Mentor.prototype.emptyStudents = function() {
+        this._students = [];
     }
 
     function assign(mentors, students) {
