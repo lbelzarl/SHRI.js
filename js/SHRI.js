@@ -450,6 +450,7 @@
     function assign(mentors, students) {
         var mentorProtege = [];
 
+        // 1-й шаг: ищем пары
         for (var i = 0; i < mentors.length; i++) {
             var mentor = mentors[i],
                 mentorStudents = mentor.getStudents(),
@@ -465,6 +466,34 @@
 
             if (protege.length) {
                 mentorProtege.push( { mentor: mentor, protege: protege } );
+            }
+        }
+
+        function getStudentsPairs(student) {
+            var result = [];
+
+            for (var i = 0; i < mentorProtege.length; i++) {
+                if (mentorProtege[i].protege.indexOf(student) >= 0) {
+                    result.push(mentorProtege[i]);
+                }
+            }
+
+            return result;
+        }
+
+        // 2-й шаг: несколько связей одного студента, то оставляем приоритетную
+        for (var i = 0; i < students.length; i++) {
+            var pairs = getStudentsPairs(students[i]);
+            if (pairs.length > 1) {
+                // получаем приоритетного ментора
+                var bestMentor = students[i].getMentors()[0];
+
+                for (var j = 0; j < pairs.length; j++) {
+                    if (pairs[j].mentor !== bestMentor) {
+                        // удаляем студента из всех менторов, кроме приоритетного
+                        pairs[j].protege.splice(pairs[j].protege.indexOf(students[i]), 1);
+                    }
+                }
             }
         }
 

@@ -193,3 +193,49 @@ textarea {
     border: 1px solid #ccc;
     border-radius: 15px;
 }
+
+.lines__wrapper {
+    position: relative;
+    width: 1140px;
+}
+
+.mentors-list {
+    float: left;
+    width: 800px;
+}
+.students-list {
+    float: left;
+    width: 300px;
+}
+
+.mentor-student-assignment {
+    clear: both;
+}
+
+.mentors-list__item {
+    position: relative;
+    float: left;
+    clear: left;
+
+    margin: 0 0 150px;
+    padding: 10px;
+
+    list-style: none;
+
+    border: 1px dashed #42DB97;
+    border-radius: 20px;
+}
+
+.students-list__item {
+    position: relative;
+    float: left;
+    clear: left;
+
+    margin: 0 0 50px;
+    padding: 5px 10px;
+
+    list-style: none;
+
+    border: 1px dashed red;
+    border-radius: 20px;
+}

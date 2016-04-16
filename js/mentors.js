@@ -1,24 +1,20 @@
 $('.load-mentors').on('click', function() {
-    //Загружаем менторов
-    $('.form-mentor__firstName').val('Николай');
-    $('.form-mentor__lastName').val('Николаев');
-    $('.form-mentor__button').click();
-
-    $('.form-mentor__firstName').val('Максим');
-    $('.form-mentor__lastName').val('Максимов');
-    $('.form-mentor__button').click();
-
-    $('.form-mentor__firstName').val('Константин');
-    $('.form-mentor__lastName').val('Константинов');
-    $('.form-mentor__button').click();
-
+    // Создаём менторов
+    SHRI.Mentors.delete();
+    SHRI.Mentors.add('Николай', 'Николаев');
+    SHRI.Mentors.add('Максим', 'Максимов');
+    SHRI.Mentors.add('Константин', 'Константинов');
 
     var mentors = SHRI.Mentors.getAll(),
         students = SHRI.Students.getAll();
 
     // Случайно составляем списки студентов и менторов
     SHRI.Mentors.assignStudents(students);
+
+    SHRI.Students.emptyAllMentors(mentors);
     SHRI.Students.assignMentors(mentors);
+
+    renderLines(mentors, students);
 
     // Распределяем студентов по менторам
     var mentorProtege = SHRI.assign(mentors, students);
@@ -30,9 +26,53 @@ $('.load-mentors').on('click', function() {
 
 });
 
-function renderProtege(mentorProtege) {
+function renderLines(mentors, students) {
+    $('.mentors-list__ul').empty();
+    for (var i = 0; i < mentors.length; i++) {
+        var item = $('<li class="mentors-list__item" data-id="' + i + '">' + mentors[i].fullName + '</li>');
+        $('.mentors-list__ul').append(item);
 
+        var mentorStudents = mentors[i].getStudents();
+        for (var j = 0 ; j < mentorStudents.length; j++) {
+            item.line(
+                item.outerWidth(),
+                item.outerHeight() / 2,
+                800,
+                SHRI.Students.getStudentId(mentorStudents[j]) * (32 + 50) + 16 - item.position().top,
+                { color: '#42DB97', style: 'dashed', zindex: 1001, stroke: 5 }
+            );
+        }
+    }
+
+    $('.students-list__ul').empty();
+    for (var i = 0; i < students.length; i++) {
+        var item = $('<li class="students-list__item" data-id="' + i + '">' + students[i].fullName + '</li>');
+        $('.students-list__ul').append(item);
+
+        var studentMentors = students[i].getMentors();
+        for (var j = 0 ; j < studentMentors.length; j++) {
+            var mentorIndex = SHRI.Mentors.getId(studentMentors[j]),
+                mentorBlock = $('.mentors-list__item[data-id=' + mentorIndex + ']');
+
+            item.line(
+                0,
+                item.outerHeight() / 2,
+                -800 + mentorBlock.width() + 22,
+                mentorIndex * (42 + 150) + 21 - item.position().top,
+                { color: 'red', style: 'solid' }
+            );
+        }
+    }
+
+}
+
+function renderProtege(mentorProtege) {
+    $('.mentor-student-assignment').empty();
     for (var i = 0; i < mentorProtege.length; i++) {
+        if (mentorProtege[i].protege.length < 1) {
+            continue;
+        }
+
         var protegeList = $('<ul class="mentor-student__ul"></ul>');
 
         for (var j = 0; j < mentorProtege[i].protege.length; j++) {
@@ -43,7 +83,7 @@ function renderProtege(mentorProtege) {
                 '<p>' + mentorProtege[i].mentor.fullName + '</p>' +
             '</div>')
         .append(protegeList)
-        .appendTo('.mentor-student')
+        .appendTo('.mentor-student-assignment');
     }
 }
 
