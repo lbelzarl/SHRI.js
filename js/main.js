@@ -61,6 +61,11 @@ $('.load-students').on('click', function() {
 
 
 
-
+$(function() {
+    $('.nav-tabs a').click(function (e) {
+        e.preventDefault()
+        $(this).tab('show')
+    })
+});
 
 
