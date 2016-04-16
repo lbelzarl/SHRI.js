@@ -67,6 +67,28 @@
             } else {
                 this._students.splice(id, 1);
             }
+        },
+
+        /**
+         * Каждому студенту случайным образом назначаем двух менторов.
+         * TODO: назначать случайное или заданное количество студентов
+         * @param {Array} [mentors] - массив менторов.
+         */
+        assignMentors: function(mentors) {
+            var students = this._students;
+
+            for (var i = 0; i < students.length; i++) {
+                var randomMentorsIndex = Math.floor(Math.random() * mentors.length);
+                students[i]._mentors.push(mentors[randomMentorsIndex]);
+
+                while (true) {
+                    var nextRandomMentorsIndex = Math.floor(Math.random() * mentors.length);
+                    if (randomMentorsIndex !== nextRandomMentorsIndex) {
+                        students[i]._mentors.push(mentors[nextRandomMentorsIndex]);
+                        break;
+                    }
+                }
+            }
         }
     };
 
@@ -337,13 +359,34 @@
         /**
          * При вызове без переметров удаляет всех менторов,
          * иначе удаляет указанного ментора. 
-         * @param {Number} [id] - индекс ментора в массиве __mentors.
+         * @param {Number} [id] - индекс ментора в массиве _mentors.
          */
         delete: function(id) {
             if (id === undefined) {
                 this._mentors = [];
             } else {
                 this._mentors.splice(id, 1);
+            }
+        },
+
+        /**
+         * Каждому ментору случайным образом назначаем двух студентов.
+         * TODO: назначать случайное или заданное количество студентов
+         * @param {Array} [students] - массив студентов.
+         */
+        assignStudents: function(students) {
+            var mentors = this._mentors;
+
+            for (var i = 0; i < mentors.length; i++) {
+                var randomStudentIndex = Math.floor(Math.random() * students.length);
+                mentors[i]._students.push(students[randomStudentIndex]);
+                while (true) {
+                    var nextRandomStudentIndex = Math.floor(Math.random() * students.length);
+                    if (randomStudentIndex !== nextRandomStudentIndex) {
+                        mentors[i]._students.push(students[nextRandomStudentIndex]);
+                        break;
+                    }
+                }
             }
         }
     };
@@ -363,7 +406,30 @@
         return this._students;
     }
 
+    function assign(mentors, students) {
+        var mentorProtege = [];
 
+        for (var i = 0; i < mentors.length; i++) {
+            var mentor = mentors[i],
+                mentorStudents = mentor.getStudents(),
+                protege = [];
+
+            for (var j = 0; j < mentorStudents.length; j++) {
+                var studentMentors = mentorStudents[j].getMentors();
+
+                if (studentMentors.indexOf(mentor) >= 0) {
+                    protege.push(mentorStudents[j]);
+                }
+            }
+
+            if (protege.length) {
+                mentorProtege.push( { mentor: mentor, protege: protege } );
+            }
+        }
+
+        return mentorProtege;
+
+    }
 
 
     window.SHRI = {
@@ -374,7 +440,8 @@
         Tasks: Tasks,
         Task: Task,
         Mentors: Mentors,
-        Mentor: Mentor
+        Mentor: Mentor,
+        assign: assign
     };
 
 }());
