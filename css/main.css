@@ -198,6 +198,8 @@ textarea {
     margin: 10px;
     padding: 20px;
 
+    vertical-align: top;
+
     border: 1px solid #ccc;
     border-radius: 15px;
 }
@@ -246,4 +248,8 @@ textarea {
 
     border: 1px solid red;
     border-radius: 20px;
+}
+
+.task-container__mark {
+    display: none;
 }

@@ -9,12 +9,13 @@ $('.create-task').on('submit', function(event) {
 
 function addTask(taskId, taskName, type, assigneeId, assigneeName) {
     $('<div class="task-container">' +
-            '<p data-task="' + +taskId + '">' + taskName + '</p>' +
-            '<p data-' + type + '="' + +assigneeId + '">' + assigneeName + '</p>' +
-            '<div class="input-group">' +
-                '<input type="text" class="form-control mark-task__mark">' +
+            '<p class="task-container__task" data-task="' + +taskId + '">' + taskName + '</p>' +
+            '<p class="task-container__assignee" data-' + type + '="' + +assigneeId + '">' + assigneeName + '</p>' +
+            '<p class="task-container__mark">5</p>' +
+            '<div class="input-group task-container__input-group">' +
+                '<input type="text" class="form-control task-container__mark-input">' +
                 '<div class="input-group-btn">' +
-                    '<button type="submit" class="btn mark-task__button" data-type="' + type + '">Оценить</button>' +
+                    '<button type="submit" class="btn task-container__button" data-type="' + type + '">Оценить</button>' +
                 '</div>' +
             '</div>' +
       '</div>')
@@ -52,14 +53,16 @@ $('.assign-task').on('submit', function(event) {
     });
 });
 
-$('.mark-task').on('click', '.mark-task__button', function(e) {
+$('.mark-task').on('click', '.task-container__button', function(e) {
     var button = $(this),
         type = button.data('type'),
-        markInput = button.parent().prev(),
-        assigneeBlock = markInput.parent().prev(),
+        container = button.parents('.task-container'),
+        markInput = container.find('.task-container__mark-input'),
+        markValue = +markInput.val(),
+        assigneeBlock = container.find('.task-container__assignee'),
         assigneeId = +assigneeBlock.data(type),
         assignee,
-        taskId = +assigneeBlock.prev().data('task'),
+        taskId = +container.find('.task-container__task').data('task'),
         task = SHRI.Tasks.get(taskId);
 
     if (type === 'team') {
@@ -70,9 +73,15 @@ $('.mark-task').on('click', '.mark-task__button', function(e) {
 
     for (var i = 0; i < assignee.tasks.length; i++) {
         if (task.taskName == assignee.tasks[i].task.taskName) {
-            assignee.tasks[i].mark = markInput.val();
+            assignee.tasks[i].mark = markValue;
         }
     }
+
+    container.find('.task-container__input-group').hide();
+
+    container.find('.task-container__mark')
+        .text('Оценка: ' + markValue)
+        .fadeIn();
 
     e.preventDefault();
 });

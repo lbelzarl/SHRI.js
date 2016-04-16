@@ -30,8 +30,10 @@ $('.create-teams').on('submit', function(event) {
         var teamId = SHRI.Teams.getTeamId(team);
 
         $('<legend>' +
-              '<input type="checkbox" value="' + teamId + '"/>' +
-               SHRI.Teams._teams[SHRI.Teams._teams.length - 1].teamName +
+              '<label>' +
+                '<input type="checkbox" value="' + teamId + '"/>' +
+                 SHRI.Teams._teams[SHRI.Teams._teams.length - 1].teamName +
+              '</label>' +
           '</legend>')
         .appendTo('.assign-task__content-teams');
 
