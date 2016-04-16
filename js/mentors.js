@@ -36,10 +36,10 @@ function renderLines(mentors, students) {
         for (var j = 0 ; j < mentorStudents.length; j++) {
             item.line(
                 item.outerWidth(),
-                item.outerHeight() / 2,
-                800,
+                item.outerHeight() / 2 - 5,
+                600,
                 SHRI.Students.getStudentId(mentorStudents[j]) * (32 + 50) + 16 - item.position().top,
-                { color: '#42DB97', style: 'dashed', zindex: 1001, stroke: 5 }
+                { color: '#42DB97', style: 'dashed', zindex: 1001, stroke: 3 }
             );
         }
     }
@@ -57,9 +57,9 @@ function renderLines(mentors, students) {
             item.line(
                 0,
                 item.outerHeight() / 2,
-                -800 + mentorBlock.width() + 22,
+                -600 + mentorBlock.width() + 22,
                 mentorIndex * (42 + 150) + 21 - item.position().top,
-                { color: 'red', style: 'solid' }
+                { color: 'red', style: 'dashed' }
             );
         }
     }

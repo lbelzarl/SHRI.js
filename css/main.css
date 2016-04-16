@@ -184,6 +184,10 @@ textarea {
    Author's custom styles
    ========================================================================== */
 
+.clearfix {
+    clear: both;
+}
+
 .task-container {
     display: inline-block;
     width: 200px;
@@ -201,15 +205,15 @@ textarea {
 
 .mentors-list {
     float: left;
-    width: 800px;
+    width: 600px;
 }
 .students-list {
     float: left;
-    width: 300px;
+    width: 250px;
 }
 
 .mentor-student-assignment {
-    clear: both;
+    float: left;
 }
 
 .mentors-list__item {
@@ -222,7 +226,7 @@ textarea {
 
     list-style: none;
 
-    border: 1px dashed #42DB97;
+    border: 3px solid #42DB97;
     border-radius: 20px;
 }
 
@@ -236,6 +240,6 @@ textarea {
 
     list-style: none;
 
-    border: 1px dashed red;
+    border: 1px solid red;
     border-radius: 20px;
 }
