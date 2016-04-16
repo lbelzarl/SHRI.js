@@ -306,8 +306,8 @@
          * @return {Number} Возвращает индекс в массиве _mentors
          */
         add: function(firstName, lastName) {
-            this._mentors.push(new Student(firstName, lastName));
-            return this._students.length - 1;
+            this._mentors.push(new Mentor(firstName, lastName));
+            return this._mentors.length - 1;
         },
 
         /**
