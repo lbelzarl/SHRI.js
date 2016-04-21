@@ -684,26 +684,39 @@
     }
 
     function deserialize(source) {
+        Tasks.delete();
+        for (var i = 0; i < source.tasks.length; i++) {
+            Tasks.create(source.tasks[i][0], source.tasks[i][1])
+        }
+
         Students.delete();
         for (var i = 0; i < source.students.length; i++) {
             var studentParam = source.students[i],
-                studentId = Students.add(studentParam[0], studentParam[1]);
+                studentId = Students.add(studentParam[0], studentParam[1]),
+                student = Students.find(i),
+                tasks = source.students[i][2];
+
+            for (var j = 0; j < tasks.length; j++) {
+                student.addTask(tasks[j].task);
+                student.assignMark(tasks[j].task, tasks[j].mark);
+            }
         }
 
         Teams.delete();
         for (var i = 0; i < source.teams.length; i++) {
             var teamParams = source.teams[i],
                 teamMembers = teamParams[1],
-                team = Teams.create(teamParams[0]);
+                team = Teams.create(teamParams[0]),
+                tasks = source.students[i][2];
 
             for (var j = 0; j < teamMembers.length; j++) {
                 team.addMember(Students.find(teamMembers[j]));
             }
-        }
 
-        Tasks.delete();
-        for (var i = 0; i < source.tasks.length; i++) {
-            Tasks.create(source.tasks[i][0], source.tasks[i][1])
+            for (var j = 0; j < tasks.length; j++) {
+                team.addTask(tasks[j].task);
+                team.assignMark(tasks[j].task, tasks[j].mark);
+            }
         }
 
         Mentors.delete();
@@ -720,12 +733,7 @@
 
         for (var i = 0; i < source.students.length; i++) {
             var student = Students.find(i),
-                tasks = source.students[i][2];
                 mentors = source.students[i][3];
-
-            for (var j = 0; j < mentors.length; j++) {
-                student.addMentor(Mentors.find(mentors[j]));
-            }
 
             for (var j = 0; j < mentors.length; j++) {
                 student.addMentor(Mentors.find(mentors[j]));
