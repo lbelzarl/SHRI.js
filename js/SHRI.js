@@ -100,6 +100,15 @@
             for (var i = 0; i < students.length; i++) {
                 students[i].emptyMentors();
             }
+        },
+
+        /**
+         * Случайным образом перетасовывает массив _students
+         */
+        shuffle: function() {
+            this._students.sort(function(a, b) {
+                return (Math.round(Math.random()) - 0.5);
+            });
         }
     };
 
@@ -112,8 +121,23 @@
         this.firstName = firstName;
         this.lastName = lastName;
         this.fullName = firstName + ' ' + lastName;
-        this.tasks = [];
+        this._tasks = [];
         this._mentors = [];
+    }
+
+    /**
+     * Сериализует студентов в массив
+     * @return {Array}
+     */
+    Student.prototype.serialize = function() {
+        return [
+            this.firstName, 
+            this.lastName, 
+            this._tasks,
+            this._mentors.map(function(mentor) {
+                return Mentors.getId(mentor);
+            })
+        ];
     }
 
     /**
@@ -122,6 +146,21 @@
      */
     Student.prototype.addMentor = function(mentor) {
         this._mentors.push(mentor);
+    }
+
+    Student.prototype.addTask = function(task) {
+        this._tasks.push({
+            task: task,
+            mark: null
+        });
+    }
+
+    Student.prototype.assignMark = function(task, mark) {
+        for (var i = 0; i < this._tasks.length; i++) {
+            if (task == this._tasks[i].task) {
+                this._tasks[i].mark = mark;
+            }
+        }
     }
 
     /**
@@ -229,6 +268,23 @@
             if (teamIndex > 0) {
                 this._teams.splice(teamIndex, 1);
             }
+        },
+
+        /**
+         * Возвращает массив команд
+         * @return {Array}
+         */
+        getAll: function() {
+            return this._teams;
+        },
+
+        /**
+         * Случайным образом перемешивает массив _teams
+         */
+        shuffle: function() {
+            this._teams.sort(function(a, b) {
+                return (Math.round(Math.random()) - 0.5);
+            });
         }
     };
 
@@ -240,13 +296,13 @@
     function Team(teamName) {
         this.teamName = teamName;
         this._members = [];
-        this.tasks = [];
+        this._tasks = [];
     };
 
     /**
-     * TODO: описать
-     * @param {Student}
-     * @return {Boolean}
+     * Проверяет находится ли студент в команде
+     * @param {Student} - Студент
+     * @return {Boolean} - true в случае если студент в команде
      */
     Team.prototype.hasMember = function(student) {
         for (var i = 0; i < this._members.length; i++) {
@@ -273,22 +329,63 @@
         return true;
     }
 
-    //----------------------Манипуляция с командой----------------------
+    /**
+     * Возвращает всех студентов в комаде 
+     * @return {Array} - массив всех студентов в команде
+     */
+    Team.prototype.getAllMembers = function() {
+        return this._members;
+    }
 
-    var EditTeam = {
+    /**
+     * Сериализует команду в массив
+     * @return {Array}
+     */
+    Team.prototype.serialize = function() {
+        return [
+            this.teamName,
+            this._members.map(function(student) {
+                return Students.getStudentId(student);
+            }),
+            this._tasks
+        ];
+    }
 
         /**
-         * Удаляет студента из команды.
-         * @param    {Number} idStudents - положение студента в массиве студентов.
-         * @param    {Number} team - положение команды в массиве команд.
+         * При вызове без аргумента удаляет всех студентов из команды
+         * При вызове с аргументом удаляет указанного студента из команды
+         * @param {Student} - Студент
          */
-        delMember: function(idStudents, team) {
-            var team = Teams.find(team);
-            var student = Students.find(+idStudents)
-            team._members.splice(student, 1);
+    Team.prototype.delMember = function(student) {
+        if (student === undefined) {
+            this._members = [];
+            return true;
         }
-    };
+        
+        for (var i = 0; i < this._members.length; i++) {
+            if (this._members[i] === student) {
+                this._members.splice(i, 1);
+                return true;
+            }
+        }
 
+        return false;
+    }
+
+    Team.prototype.addTask = function(task) {
+        this._tasks.push({
+            task: task,
+            mark: null
+        });
+    }
+
+    Team.prototype.assignMark = function(task, mark) {
+        for (var i = 0; i < this._tasks.length; i++) {
+            if (task == this._tasks[i].task) {
+                this._tasks[i].mark = mark;
+            }
+        }
+    }
 
 
     // ----------------------------------Задания---------------------
@@ -320,13 +417,61 @@
          */
         get: function(taskId) {
             return this._tasks[taskId];
-        }
+        },
+
+        /**
+         * Возвращает индекс задачи в массиве _tasks.
+         * @param {Task} task - задача.
+         * @return {Number|Null} - Возвращает индекс задачи в массиве _tasks
+         *                                                 а при его отсутствии - null.
+         */
+        getId: function(task) {
+            for (var i = 0; i < this._tasks.length; i++) {
+                if (task === this._tasks[i]) {
+                    return i;
+                }
+            }
+
+            return null;
+        },
+
+        /**
+         * Возвращает массив задач
+         * @return {Array}
+         */
+        getAll: function() {
+            return this._tasks;
+        },
+
+        /**
+         * При вызове без переметров удаляет все задачи,
+         * иначе удаляет указанную задачу. 
+         * @param {Number} [id] - индекс задачи в массиве _tasks.
+         */
+        delete: function(id) {
+            if (id === undefined) {
+                this._tasks = [];
+            } else {
+                this._tasks.splice(id, 1);
+            }
+        },
     };
 
+    /**
+     * Класс задача
+     * @constructor
+     * @param {String} taskName - Наименование задачи
+     * @param {String} description - Условие задачи
+     */
     function Task(taskName, description) {
         this.taskName = taskName;
         this.description = description;
     }
+
+    Task.prototype.serialize = function() {
+        return [this.taskName, this.description];
+    }
+
 
 //---------------Менторы------------------------------
 
@@ -417,6 +562,12 @@
         }
     };
 
+    /**
+     * Класс ментор
+     * @constructor
+     * @param {String} firstName - Имя
+     * @param {String} lastName - Фамилие
+     */
     function Mentor(firstName, lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -447,6 +598,19 @@
         this._students = [];
     }
 
+    /**
+     * Сериализует менторов в массив
+     * @return {Array}
+     */
+    Mentor.prototype.serialize = function() {
+        return [this.firstName, this.lastName, this._students.map(function(student) {
+            return Students.getStudentId(student);
+        })];
+    }
+
+    /**
+     * TODO
+     */
     function assign(mentors, students) {
         var mentorProtege = [];
 
@@ -502,7 +666,74 @@
     }
 
 
-    window.SHRI = {
+    function serialize() {
+        return {
+            students: Students.getAll().map(function(student) {
+                return student.serialize();
+            }),
+            teams: Teams.getAll().map(function(team) {
+                return team.serialize();
+            }),
+            tasks: Tasks.getAll().map(function(task) {
+                return task.serialize();
+            }),
+            mentors: Mentors.getAll().map(function(mentor) {
+                return mentor.serialize();
+            })
+        }
+    }
+
+    function deserialize(source) {
+        Students.delete();
+        for (var i = 0; i < source.students.length; i++) {
+            var studentParam = source.students[i],
+                studentId = Students.add(studentParam[0], studentParam[1]);
+        }
+
+        Teams.delete();
+        for (var i = 0; i < source.teams.length; i++) {
+            var teamParams = source.teams[i],
+                teamMembers = teamParams[1],
+                team = Teams.create(teamParams[0]);
+
+            for (var j = 0; j < teamMembers.length; j++) {
+                team.addMember(Students.find(teamMembers[j]));
+            }
+        }
+
+        Tasks.delete();
+        for (var i = 0; i < source.tasks.length; i++) {
+            Tasks.create(source.tasks[i][0], source.tasks[i][1])
+        }
+
+        Mentors.delete();
+        for (var i = 0; i < source.mentors.length; i++) {
+            var mentorParams = source.mentors[i],
+                mentorId = Mentors.add(mentorParams[0], mentorParams[1]),
+                mentor = Mentors.find(mentorId),
+                protege = mentorParams[2];
+
+            for (var j = 0; j < protege.length; j++) {
+                mentor.addStudent(Students.find(protege[j]));
+            }
+        }
+
+        for (var i = 0; i < source.students.length; i++) {
+            var student = Students.find(i),
+                tasks = source.students[i][2];
+                mentors = source.students[i][3];
+
+            for (var j = 0; j < mentors.length; j++) {
+                student.addMentor(Mentors.find(mentors[j]));
+            }
+
+            for (var j = 0; j < mentors.length; j++) {
+                student.addMentor(Mentors.find(mentors[j]));
+            }
+        }
+    }
+
+    var SHRI = {
         Students: Students,
         Student: Student,
         Teams: Teams,
@@ -511,7 +742,15 @@
         Task: Task,
         Mentors: Mentors,
         Mentor: Mentor,
-        assign: assign
+        assign: assign,
+        serialize: serialize,
+        deserialize: deserialize
     };
+
+    if (typeof module === 'object' && module.exports) {
+        module.exports = SHRI;
+    } else {
+        window.SHRI = SHRI;
+    }
 
 }());

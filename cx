@@ -1,0 +1,535 @@
+[1mdiff --git index.html index.html[m
+[1mindex f1940cb..1fbda3c 100644[m
+[1m--- index.html[m
+[1m+++ index.html[m
+[1;35m@@ -45,6 +45,7 @@[m
+                                     </label>[m
+                                 </div>[m
+                                 <button type="submit" class="btn form-student__button">Добавить студента</button>[m
+[1;34m+[m[1;34m                                <ul class="form-student__ul-students"></ul>[m
+                             </form>[m
+                         </div>[m
+                         <div class="col-md-4">[m
+[1;35m@@ -64,6 +65,7 @@[m
+                                     </label>[m
+                                 </div>[m
+                                 <button type="submit" class="btn create-teams__button">Создать команду</button>[m
+[1;34m+[m[1;34m                                <div class="create-teams__div-teams"></div>[m
+                             </form>[m
+                         </div>[m
+                         <div class="col-md-4">[m
+[1;35m@@ -82,6 +84,7 @@[m
+                                     </label>[m
+                                 </div>[m
+                                 <button type="submit" class="btn create-task__button">Создать задачу</button>[m
+[1;34m+[m[1;34m                                <ul class="create-task__ul-task"></ul>[m
+                             </form>[m
+                         </div>[m
+                     </div>[m
+[1;35m@@ -100,8 +103,11 @@[m
+                                 </div>[m
+                             </div>[m
+                             <div class="col-md-4">[m
+[1;31m-                                <div class="form-group assign-task__content-teams">[m
+[1;34m+[m[1;34m                                <div class="form-group">[m
+                                     Выберите команду[m
+[1;34m+[m[1;34m                                    <div class="form-group assign-task__content-teams">[m
+[1;34m+[m[41m                                        [m
+[1;34m+[m[1;34m                                    </div>[m
+                                 </div>[m
+                             </div>[m
+                             <div class="col-md-4">[m
+[1mdiff --git js/SHRI.js js/SHRI.js[m
+[1mindex 93f13ec..9c4eb10 100644[m
+[1m--- js/SHRI.js[m
+[1m+++ js/SHRI.js[m
+[1;35m@@ -100,6 +100,12 @@[m
+             for (var i = 0; i < students.length; i++) {[m
+                 students[i].emptyMentors();[m
+             }[m
+[1;34m+[m[1;34m        },[m
+[1;34m+[m
+[1;34m+[m[1;34m        shuffle: function() {[m
+[1;34m+[m[1;34m            this._students.sort(function(a, b) {[m
+[1;34m+[m[1;34m                return (Math.round(Math.random()) - 0.5);[m
+[1;34m+[m[1;34m            });[m
+         }[m
+     };[m
+ [m
+[1;35m@@ -117,6 +123,15 @@[m
+     }[m
+ [m
+     /**[m
+[1;34m+[m[1;34m     * TODO: jsdoc[m
+[1;34m+[m[1;34m     */[m
+[1;34m+[m[1;34m    Student.prototype.serialize = function() {[m
+[1;34m+[m[1;34m        return [this.firstName, this.lastName, this._mentors.map(function(mentor) {[m
+[1;34m+[m[1;34m            return Mentors.getId(mentor);[m
+[1;34m+[m[1;34m        })];[m
+[1;34m+[m[1;34m    }[m
+[1;34m+[m
+[1;34m+[m[1;34m    /**[m
+      * Добавляет ментора в массив менторов в которых заинтересован студент[m
+      * @param {Mentor} mentor - ментор[m
+      */[m
+[1;35m@@ -229,6 +244,20 @@[m
+             if (teamIndex > 0) {[m
+                 this._teams.splice(teamIndex, 1);[m
+             }[m
+[1;34m+[m[1;34m        },[m
+[1;34m+[m
+[1;34m+[m[1;34m        /**[m
+[1;34m+[m[1;34m         * Возвращает массив команд[m
+[1;34m+[m[1;34m         * @return {Array}[m
+[1;34m+[m[1;34m         */[m
+[1;34m+[m[1;34m        getAll: function() {[m
+[1;34m+[m[1;34m            return this._teams;[m
+[1;34m+[m[1;34m        },[m
+[1;34m+[m
+[1;34m+[m[1;34m        shuffle: function() {[m
+[1;34m+[m[1;34m            this._teams.sort(function(a, b) {[m
+[1;34m+[m[1;34m                return (Math.round(Math.random()) - 0.5);[m
+[1;34m+[m[1;34m            });[m
+         }[m
+     };[m
+ [m
+[1;35m@@ -273,6 +302,23 @@[m
+         return true;[m
+     }[m
+ [m
+[1;34m+[m[1;34m    /**[m
+[1;34m+[m[1;34m     *[m[41m [m
+[1;34m+[m[1;34m     */[m
+[1;34m+[m[1;34m    Team.prototype.getAllMembers = function() {[m
+[1;34m+[m[1;34m        return this._members;[m
+[1;34m+[m[1;34m    }[m
+[1;34m+[m
+[1;34m+[m[1;34m    /**[m
+[1;34m+[m[1;34m     * Сериализует команду в массив[m
+[1;34m+[m[1;34m     * @return {Array}[m
+[1;34m+[m[1;34m     */[m
+[1;34m+[m[1;34m    Team.prototype.serialize = function() {[m
+[1;34m+[m[1;34m        return [this.teamName, this._members.map(function(student) {[m
+[1;34m+[m[1;34m            return Students.getStudentId(student);[m
+[1;34m+[m[1;34m        })];[m
+[1;34m+[m[1;34m    }[m
+[1;34m+[m
+     //----------------------Манипуляция с командой----------------------[m
+ [m
+     var EditTeam = {[m
+[1;35m@@ -320,7 +366,30 @@[m
+          */[m
+         get: function(taskId) {[m
+             return this._tasks[taskId];[m
+[1;31m-        }[m
+[1;34m+[m[1;34m        },[m
+[1;34m+[m
+[1;34m+[m[1;34m                /**[m
+[1;34m+[m[1;34m         * Возвращает массив задач[m
+[1;34m+[m[1;34m         * @return {Array}[m
+[1;34m+[m[1;34m         */[m
+[1;34m+[m[1;34m        getAll: function() {[m
+[1;34m+[m[1;34m            return this._tasks;[m
+[1;34m+[m[1;34m        },[m
+[1;34m+[m
+[1;34m+[m[1;34m        /**[m
+[1;34m+[m[1;34m         * При вызове без переметров удаляет все задачи,[m
+[1;34m+[m[1;34m         * иначе удаляет указанную задачу.[m[41m [m
+[1;34m+[m[1;34m         * @param {Number} [id] - индекс задачи в массиве _tasks.[m
+[1;34m+[m[1;34m         */[m
+[1;34m+[m[1;34m        delete: function(id) {[m
+[1;34m+[m[1;34m            if (id === undefined) {[m
+[1;34m+[m[1;34m                this._tasks = [];[m
+[1;34m+[m[1;34m            } else {[m
+[1;34m+[m[1;34m                this._tasks.splice(id, 1);[m
+[1;34m+[m[1;34m            }[m
+[1;34m+[m[1;34m        },[m
+[1;34m+[m
+[1;34m+[m
+     };[m
+ [m
+     function Task(taskName, description) {[m
+[1;35m@@ -447,6 +516,15 @@[m
+         this._students = [];[m
+     }[m
+ [m
+[1;34m+[m[1;34m    /**[m
+[1;34m+[m[1;34m     * TODO:[m
+[1;34m+[m[1;34m     */[m
+[1;34m+[m[1;34m    Mentor.prototype.serialize = function() {[m
+[1;34m+[m[1;34m        return [this.firstName, this.lastName, this._students.map(function(student) {[m
+[1;34m+[m[1;34m            return Students.getStudentId(student);[m
+[1;34m+[m[1;34m        })];[m
+[1;34m+[m[1;34m    }[m
+[1;34m+[m
+     function assign(mentors, students) {[m
+         var mentorProtege = [];[m
+ [m
+[1;35m@@ -501,6 +579,60 @@[m
+ [m
+     }[m
+ [m
+[1;34m+[m[1;34m    function serialize() {[m
+[1;34m+[m[1;34m        return {[m
+[1;34m+[m[1;34m            students: Students.getAll().map(function(student) {[m
+[1;34m+[m[1;34m                return student.serialize();[m
+[1;34m+[m[1;34m            }),[m
+[1;34m+[m[1;34m            teams: Teams.getAll().map(function(team) {[m
+[1;34m+[m[1;34m                return team.serialize();[m
+[1;34m+[m[1;34m            }),[m
+[1;34m+[m[1;34m            mentors: Mentors.getAll().map(function(mentor) {[m
+[1;34m+[m[1;34m                return mentor.serialize();[m
+[1;34m+[m[1;34m            })[m
+[1;34m+[m[1;34m        }[m
+[1;34m+[m[1;34m    }[m
+[1;34m+[m
+[1;34m+[m[1;34m    function deserialize(source) {[m
+[1;34m+[m[1;34m        Students.delete();[m
+[1;34m+[m[1;34m        for (var i = 0; i < source.students.length; i++) {[m
+[1;34m+[m[1;34m            var studentParam = source.students[i],[m
+[1;34m+[m[1;34m                studentId = Students.add(studentParam[0], studentParam[1]);[m
+[1;34m+[m[1;34m        }[m
+[1;34m+[m
+[1;34m+[m[1;34m        Teams.delete();[m
+[1;34m+[m[1;34m        for (var i = 0; i < source.teams.length; i++) {[m
+[1;34m+[m[1;34m            var teamParams = source.teams[i],[m
+[1;34m+[m[1;34m                teamMembers = teamParams[1],[m
+[1;34m+[m[1;34m                team = Teams.create(teamParams[0]);[m
+[1;34m+[m
+[1;34m+[m[1;34m            for (var j = 0; j < teamMembers.length; j++) {[m
+[1;34m+[m[1;34m                team.addMember(Students.find(teamMembers[j]));[m
+[1;34m+[m[1;34m            }[m
+[1;34m+[m[1;34m        }[m
+[1;34m+[m
+[1;34m+[m[1;34m        Mentors.delete();[m
+[1;34m+[m[1;34m        for (var i = 0; i < source.mentors.length; i++) {[m
+[1;34m+[m[1;34m            var mentorParams = source.mentors[i],[m
+[1;34m+[m[1;34m                mentorId = Mentors.add(mentorParams[0], mentorParams[1]),[m
+[1;34m+[m[1;34m                mentor = Mentors.find(mentorId),[m
+[1;34m+[m[1;34m                protege = mentorParams[2];[m
+[1;34m+[m
+[1;34m+[m[1;34m            for (var j = 0; j < protege.length; j++) {[m
+[1;34m+[m[1;34m                mentor.addStudent(Students.find(protege[j]));[m
+[1;34m+[m[1;34m            }[m
+[1;34m+[m[1;34m        }[m
+[1;34m+[m
+[1;34m+[m[1;34m        for (var i = 0; i < source.students.length; i++) {[m
+[1;34m+[m[1;34m            var student = Students.find(i),[m
+[1;34m+[m[1;34m                mentorss = source.students[i][2];[m
+[1;34m+[m
+[1;34m+[m[1;34m            for (var j = 0; j < mentorss.length; j++) {[m
+[1;34m+[m[1;34m                student.addMentor(Mentors.find(mentorss[j]));[m
+[1;34m+[m[1;34m            }[m
+[1;34m+[m[1;34m        }[m
+[1;34m+[m[1;34m    }[m
+[1;34m+[m
+     var SHRI = {[m
+         Students: Students,[m
+         Student: Student,[m
+[1;35m@@ -510,7 +642,9 @@[m
+         Task: Task,[m
+         Mentors: Mentors,[m
+         Mentor: Mentor,[m
+[1;31m-        assign: assign[m
+[1;34m+[m[1;34m        assign: assign,[m
+[1;34m+[m[1;34m        serialize: serialize,[m
+[1;34m+[m[1;34m        deserialize: deserialize[m
+     };[m
+ [m
+     if (typeof module === 'object' && module.exports) {[m
+[1mdiff --git js/main.js js/main.js[m
+[1mindex a6f7b17..5e356f0 100644[m
+[1m--- js/main.js[m
+[1m+++ js/main.js[m
+[1;35m@@ -1,62 +1,52 @@[m
+ $('.load-students').on('click', function() {[m
+     //Загружаем список студентов[m
+[1;31m-    $('.form-student__firstName').val('Вася');[m
+[1;31m-    $('.form-student__lastName').val('Васечкин');[m
+[1;31m-    $('.form-student__button').click();[m
+[1;31m-[m
+[1;31m-    $('.form-student__firstName').val('Петя');[m
+[1;31m-    $('.form-student__lastName').val('Петячкин');[m
+[1;31m-    $('.form-student__button').click();[m
+[1;31m-[m
+[1;31m-    $('.form-student__firstName').val('Коля');[m
+[1;31m-    $('.form-student__lastName').val('Колечкин');[m
+[1;31m-    $('.form-student__button').click();[m
+[1;31m-[m
+[1;31m-    $('.form-student__firstName').val('Юля');[m
+[1;31m-    $('.form-student__lastName').val('Юличкина');[m
+[1;31m-    $('.form-student__button').click();[m
+[1;31m-[m
+[1;31m-    $('.form-student__firstName').val('Маша');[m
+[1;31m-    $('.form-student__lastName').val('Машечкина');[m
+[1;31m-    $('.form-student__button').click();[m
+[1;31m-[m
+[1;31m-    $('.form-student__firstName').val('Валя');[m
+[1;31m-    $('.form-student__lastName').val('Валечкина');[m
+[1;31m-    $('.form-student__button').click();[m
+[1;34m+[m[1;34m    SHRI.Students.delete();[m
+[1;34m+[m[1;34m    SHRI.Students.add('Вася', 'Васечкин');[m
+[1;34m+[m[1;34m    SHRI.Students.add('Валя', 'Валечкин');[m
+[1;34m+[m[1;34m    SHRI.Students.add('Петя', 'Петячкин');[m
+[1;34m+[m[1;34m    SHRI.Students.add('Митя', 'Митечкин');[m
+[1;34m+[m[1;34m    SHRI.Students.add('Витя', 'Витечкин');[m
+[1;34m+[m[1;34m    SHRI.Students.add('Вика', 'Викечкина');[m
+[1;34m+[m[1;34m    SHRI.Students.add('Маша', 'Машечкина');[m
+[1;34m+[m[1;34m    SHRI.Students.add('Даша', 'Дашечкина');[m
+[1;34m+[m[1;34m    SHRI.Students.add('Юля', 'Юлечкина');[m
+[1;34m+[m[1;34m    SHRI.Students.add('Таня', 'Танечкина');[m
+[1;34m+[m[1;34m    SHRI.Students.shuffle();[m
+[1;34m+[m
+[1;34m+[m[1;34m    $(document.body).trigger('student:added');[m
+ [m
+     //Создаем команды и групперуем студентов по командам.[m
+[1;31m-    $('.create-teams__name').val('Орлы');[m
+[1;31m-    $('.create-teams__select [value="0"]').attr('selected', 'selected');[m
+[1;31m-    $('.create-teams__select [value="1"]').attr('selected', 'selected');[m
+[1;31m-    $('.create-teams__button').click();[m
+[1;31m-    $('.create-teams__select [value="0"]').removeAttr('selected');[m
+[1;31m-    $('.create-teams__select [value="1"]').removeAttr('selected');[m
+[1;34m+[m[1;34m    SHRI.Teams.delete();[m
+[1;34m+[m[1;34m    SHRI.Teams.create('Орлы');[m
+[1;34m+[m[1;34m    SHRI.Teams.create('Соколы');[m
+[1;34m+[m[1;34m    SHRI.Teams.create('Голуби');[m
+[1;34m+[m[1;34m    SHRI.Teams.create('Личинки');[m
+[1;34m+[m[1;34m    SHRI.Teams.shuffle();[m
+ [m
+[1;31m-    $('.create-teams__name').val('Соколы');[m
+[1;31m-    $('.create-teams__select [value="2"]').attr('selected', 'selected');[m
+[1;31m-    $('.create-teams__select [value="3"]').attr('selected', 'selected');[m
+[1;31m-    $('.create-teams__button').click();[m
+[1;31m-    $('.create-teams__select [value="2"]').removeAttr('selected');[m
+[1;31m-    $('.create-teams__select [value="3"]').removeAttr('selected');[m
+[1;34m+[m[1;34m    var students = SHRI.Students.getAll(),[m
+[1;34m+[m[1;34m        teams = SHRI.Teams.getAll();[m
+ [m
+[1;31m-    $('.create-teams__name').val('Инвалиды');[m
+[1;31m-    $('.create-teams__select [value="4"]').attr('selected', 'selected');[m
+[1;31m-    $('.create-teams__select [value="5"]').attr('selected', 'selected');[m
+[1;31m-    $('.create-teams__button').click();[m
+[1;34m+[m[1;34m    teams[0].addMember(students[0]);[m
+[1;34m+[m[1;34m    teams[0].addMember(students[1]);[m
+[1;34m+[m[1;34m    teams[0].addMember(students[2]);[m
+[1;34m+[m[1;34m    teams[1].addMember(students[3]);[m
+[1;34m+[m[1;34m    teams[1].addMember(students[4]);[m
+[1;34m+[m[1;34m    teams[1].addMember(students[5]);[m
+[1;34m+[m[1;34m    teams[2].addMember(students[6]);[m
+[1;34m+[m[1;34m    teams[2].addMember(students[7]);[m
+[1;34m+[m[1;34m    teams[3].addMember(students[8]);[m
+[1;34m+[m[1;34m    teams[3].addMember(students[9]);[m
+[1;34m+[m
+[1;34m+[m[1;34m    $(document.body).trigger('team:added');[m
+ [m
+     // Загружаем список задач.[m
+[1;31m-    $('.create-task__team-name').val('Задача1');[m
+[1;31m-    $('.create-task__description').val('Подпрыгнуть 10 раз');[m
+[1;31m-    $('.create-task__button').click();[m
+[1;31m-[m
+[1;31m-    $('.create-task__team-name').val('Задача2');[m
+[1;31m-    $('.create-task__description').val('Подпрыгнуть 20 раз');[m
+[1;31m-    $('.create-task__button').click();[m
+[1;31m-[m
+[1;31m-    $('.create-task__team-name').val('Задача3');[m
+[1;31m-    $('.create-task__description').val('Подпрыгнуть 30 раз');[m
+[1;31m-    $('.create-task__button').click();[m
+[1;34m+[m[1;34m    SHRI.Tasks.delete();[m
+[1;34m+[m[1;34m    SHRI.Tasks.create('Задача1', 'Подпрыгнуть 10 раз');[m
+[1;34m+[m[1;34m    SHRI.Tasks.create('Задача2', 'Подпрыгнуть 20 раз');[m
+[1;34m+[m[1;34m    SHRI.Tasks.create('Задача3', 'Подпрыгнуть 30 раз');[m
+[1;34m+[m[1;34m    SHRI.Tasks.create('Задача4', 'Подпрыгнуть 40 раз');[m
+ [m
+[1;34m+[m[1;34m    $(document.body).trigger('task:added');[m
+ });[m
+ [m
+ $('.nav-tabs a').click(function (e) {[m
+[1mdiff --git js/mentors.js js/mentors.js[m
+[1mindex 8941564..e73c284 100644[m
+[1m--- js/mentors.js[m
+[1m+++ js/mentors.js[m
+[1;35m@@ -1,9 +1,12 @@[m
+[1;34m+[m[1;34m;(function() {[m
+[1;34m+[m
+ $('.load-mentors').on('click', function() {[m
+     // Создаём менторов[m
+     SHRI.Mentors.delete();[m
+     SHRI.Mentors.add('Николай', 'Николаев');[m
+     SHRI.Mentors.add('Максим', 'Максимов');[m
+     SHRI.Mentors.add('Константин', 'Константинов');[m
+[1;34m+[m[1;34m    SHRI.Mentors.add('Петр', 'Петров');[m
+ [m
+     var mentors = SHRI.Mentors.getAll(),[m
+         students = SHRI.Students.getAll();[m
+[1;35m@@ -52,7 +55,7 @@[m [mfunction renderLines(mentors, students) {[m
+         var studentMentors = students[i].getMentors();[m
+         for (var j = 0 ; j < studentMentors.length; j++) {[m
+             var mentorIndex = SHRI.Mentors.getId(studentMentors[j]),[m
+[1;31m-                mentorBlock = $('.mentors-list__item[data-id=' + mentorIndex + ']');[m
+[1;34m+[m[1;34m                mentorBlock = $('.mentors-list__item[data-id="' + mentorIndex + '"]');[m
+ [m
+             item.line([m
+                 0,[m
+[1;35m@@ -63,7 +66,6 @@[m [mfunction renderLines(mentors, students) {[m
+             );[m
+         }[m
+     }[m
+[1;31m-[m
+ }[m
+ [m
+ function renderProtege(mentorProtege) {[m
+[1;35m@@ -94,3 +96,5 @@[m [m$('.form-mentor').on('submit', function(event) {[m
+ [m
+     event.preventDefault();[m
+ });[m
+[1;34m+[m
+[1;34m+[m[1;34m}());[m
+[1mdiff --git js/students.js js/students.js[m
+[1mindex b33cfb5..456a0eb 100644[m
+[1m--- js/students.js[m
+[1m+++ js/students.js[m
+[1;35m@@ -1,19 +1,32 @@[m
+ $('.form-student').on('submit', function(event) {[m
+     var firstName = $('.form-student__firstName').val();[m
+     var lastName = $('.form-student__lastName').val();[m
+[1;31m-    var id = SHRI.Students.add(firstName, lastName);[m
+[1;34m+[m[1;34m    SHRI.Students.add(firstName, lastName);[m
+ [m
+     event.preventDefault();[m
+[1;31m-    $(this).trigger('student:added', id);[m
+[1;34m+[m[1;34m    $(document.body).trigger('student:added');[m
+ });[m
+ [m
+[1;31m-$('.form-student').on('student:added', function(event, id) {[m
+[1;31m-    var student = SHRI.Students.find(id);[m
+[1;34m+[m[1;34m$(document.body).on('student:added', function() {[m
+[1;34m+[m[1;34m    $('.assign-task__ul-students').empty();[m
+[1;34m+[m[1;34m    $('.create-teams__select').empty();[m
+[1;34m+[m[1;34m    $('.form-student__ul-students').empty();[m
+[1;34m+[m[1;34m    var students = SHRI.Students.getAll();[m
+ [m
+[1;31m-    $('<option value="' + id + '">' + student.fullName + '</option>')[m
+[1;34m+[m[1;34m    for (var i = 0; i < students.length; i++) {[m
+[1;34m+[m[1;34m        //Выводим список студентов под формой добавления студента[m
+[1;34m+[m[1;34m        $('<li>' + students[i].fullName + '</li>')[m
+[1;34m+[m[1;34m        .appendTo('.form-student__ul-students');[m
+[1;34m+[m
+[1;34m+[m[1;34m        // Заполняем селект для для выбора состава команты.[m
+[1;34m+[m[1;34m        $('<option value="' + i + '">' + students[i].fullName + '</option>')[m
+         .appendTo('.create-teams__select');[m
+ [m
+[1;31m-        $('<li type="none"><label><input type="checkbox" value="' + id + '"/>' + student.fullName + '</label></li>')[m
+[1;34m+[m[1;34m        // Выводим список студентов для назначения задач[m
+[1;34m+[m[1;34m        $('<li type="none">' +[m
+[1;34m+[m[1;34m               '<label><input type="checkbox" value="' + i + '"/>' + students[i].fullName +[m[41m [m
+[1;34m+[m[1;34m               '</label>' +[m
+[1;34m+[m[1;34m          '</li>')[m
+         .appendTo('.assign-task__ul-students');[m
+[1;31m-[m
+[1;34m+[m[1;34m    }[m
+ });[m
+\ No newline at end of file[m
+[1mdiff --git js/tasks.js js/tasks.js[m
+[1mindex 163cd41..424c1d6 100644[m
+[1m--- js/tasks.js[m
+[1m+++ js/tasks.js[m
+[1;35m@@ -2,11 +2,26 @@[m [m$('.create-task').on('submit', function(event) {[m
+     event.preventDefault();[m
+     var taskName = $('.create-task__team-name').val();[m
+     var description = $('.create-task__description').val();[m
+[1;31m-    var id = SHRI.Tasks.create(taskName, description);[m
+[1;31m-    $('<option value=' + id + '>' + taskName + '</option>')[m
+[1;34m+[m[1;34m    SHRI.Tasks.create(taskName, description);[m
+[1;34m+[m
+[1;34m+[m[1;34m    $(document.body).trigger('tasks:added');[m
+[1;34m+[m[1;34m});[m
+[1;34m+[m
+[1;34m+[m[1;34m$(document.body).on('task:added', function() {[m
+[1;34m+[m[1;34m    $('.assign-task__select').empty();[m
+[1;34m+[m[1;34m    $('.create-task__ul-task').empty();[m
+[1;34m+[m[1;34m    var tasks = SHRI.Tasks.getAll();[m
+[1;34m+[m
+[1;34m+[m[1;34m    for (var i = 0; i < tasks.length; i++) {[m
+[1;34m+[m[1;34m        $('<option value="' + i + '">' + tasks[i].taskName + '</option>')[m
+         .appendTo('.assign-task__select');[m
+[1;34m+[m
+[1;34m+[m[1;34m        $('<li>' + tasks[i].taskName + '</li>').appendTo('.create-task__ul-task');[m
+[1;34m+[m[1;34m    }[m
+ });[m
+ [m
+[1;34m+[m
+[1;34m+[m
+ function addTask(taskId, taskName, type, assigneeId, assigneeName) {[m
+     $('<div class="task-container">' +[m
+             '<p class="task-container__task" data-task="' + +taskId + '">' + taskName + '</p>' +[m
+[1;35m@@ -85,3 +100,5 @@[m [m$('.mark-task').on('click', '.task-container__button', function(e) {[m
+ [m
+     e.preventDefault();[m
+ });[m
+[1;34m+[m
+[1;34m+[m[1;34m//[m
+[1mdiff --git js/teams.js js/teams.js[m
+[1mindex bfd4fe0..d069698 100644[m
+[1m--- js/teams.js[m
+[1m+++ js/teams.js[m
+[1;35m@@ -27,26 +27,45 @@[m [m$('.create-teams').on('submit', function(event) {[m
+         team = SHRI.Teams.create(teamName);[m
+ [m
+     if (team) {[m
+[1;31m-        var teamId = SHRI.Teams.getTeamId(team);[m
+[1;31m-[m
+[1;31m-        $('<legend>' +[m
+[1;31m-              '<label>' +[m
+[1;31m-                '<input type="checkbox" value="' + teamId + '"/>' +[m
+[1;31m-                 SHRI.Teams._teams[SHRI.Teams._teams.length - 1].teamName +[m
+[1;31m-              '</label>' +[m
+[1;31m-          '</legend>')[m
+[1;31m-        .appendTo('.assign-task__content-teams');[m
+[1;31m-[m
+[1;31m-        var membersList = $('<ul class="create-teams__ul"></ul>');[m
+[1;31m-[m
+         Object.keys(studentsToAdd).forEach(function(studentId) {[m
+             var student = SHRI.Students.find(+studentId);[m
+             team.addMember(student);[m
+[1;31m-            membersList.append('<li>' + student.fullName + '</li>') [m
+         });[m
+ [m
+[1;31m-        membersList.appendTo('.assign-task__content-teams');[m
+[1;34m+[m
+     } else {[m
+         alert('Ошибка при создании команды, т.к.\n' + 'такая команда уже есть.');[m
+[1;34m+[m[1;34m        return;[m
+     }[m
+[1;34m+[m[1;34m    $(document.body).trigger('team:added');[m
+ });[m
+[1;34m+[m
+[1;34m+[m[1;34m//[m[41m [m
+[1;34m+[m[1;34m$(document.body).on('team:added', function() {[m
+[1;34m+[m[1;34m    $('.assign-task__content-teams').empty();[m
+[1;34m+[m[1;34m    $('.create-teams__div-teams').empty();[m
+[1;34m+[m[1;34m    var teams = SHRI.Teams.getAll();[m
+[1;34m+[m
+[1;34m+[m[1;34m    for (var i = 0; i < teams.length; i++) {[m
+[1;34m+[m[1;34m        $('<legend>' +[m
+[1;34m+[m[1;34m              '<label>' +[m
+[1;34m+[m[1;34m                '<input type="checkbox" value="' + i + '"/>' +[m
+[1;34m+[m[1;34m                 teams[i].teamName +[m
+[1;34m+[m[1;34m              '</label>' +[m
+[1;34m+[m[1;34m          '</legend>')[m
+[1;34m+[m[1;34m        .appendTo('.assign-task__content-teams');[m
+[1;34m+[m
+[1;34m+[m[1;34m        $('<label>' + teams[i].teamName + '</label>').appendTo('.create-teams__div-teams');[m
+[1;34m+[m
+[1;34m+[m[1;34m        var members = teams[i].getAllMembers(),[m
+[1;34m+[m[1;34m            membersList = $('<ul class="create-teams__ul"></ul>');[m
+[1;34m+[m
+[1;34m+[m[1;34m        for (var j = 0; j < members.length; j++) {[m
+[1;34m+[m[1;34m            membersList.append('<li>' + members[j].fullName + '</li>');[m
+[1;34m+[m[1;34m        }[m
+[1;34m+[m
+[1;34m+[m[1;34m        membersList.appendTo('.assign-task__content-teams');[m
+[1;34m+[m[1;34m        membersList.clone().appendTo('.create-teams__div-teams');[m
+[1;34m+[m[1;34m    }[m
+[1;34m+[m
+[1;34m+[m[1;34m});[m
+\ No newline at end of file[m

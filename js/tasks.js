@@ -2,12 +2,25 @@ $('.create-task').on('submit', function(event) {
     event.preventDefault();
     var taskName = $('.create-task__team-name').val();
     var description = $('.create-task__description').val();
-    var id = SHRI.Tasks.create(taskName, description);
-    $('<option value=' + id + '>' + taskName + '</option>')
-        .appendTo('.assign-task__select');
+    SHRI.Tasks.create(taskName, description);
+
+    $(document.body).trigger('task:added');
 });
 
-function addTask(taskId, taskName, type, assigneeId, assigneeName) {
+$(document.body).on('task:added', function() {
+    $('.assign-task__select').empty();
+    $('.create-task__ul-task').empty();
+    var tasks = SHRI.Tasks.getAll();
+
+    for (var i = 0; i < tasks.length; i++) {
+        $('<option value="' + i + '">' + tasks[i].taskName + '</option>')
+        .appendTo('.assign-task__select');
+
+        $('<li>' + tasks[i].taskName + '</li>').appendTo('.create-task__ul-task');
+    }
+});
+
+function blockAssignMark(taskId, taskName, type, assigneeId, assigneeName) {
     $('<div class="task-container">' +
             '<p class="task-container__task" data-task="' + +taskId + '">' + taskName + '</p>' +
             '<p class="task-container__assignee" data-' + type + '="' + +assigneeId + '">' + assigneeName + '</p>' +
@@ -32,25 +45,44 @@ $('.assign-task').on('submit', function(event) {
         var teamId = +input.value,
             team = SHRI.Teams.find(teamId);
 
-        team.tasks.push({
-            task: task,
-            mark: null
-        });
+        team.addTask(task);
 
-        addTask(taskId, task.taskName, 'team', teamId, team.teamName);
+        blockAssignMark(taskId, task.taskName, 'team', teamId, team.teamName);
     });
 
     $('.assign-task__content-students input:checked').each(function(i, input) {
         var studentId = +input.value,
             student = SHRI.Students.find(studentId);
 
-        student.tasks.push({
-            task: task,
-            mark: null
-        });
+        student.addTask(task);
 
-        addTask(taskId, task.taskName, 'student', studentId, student.fullName);
+        blockAssignMark(taskId, task.taskName, 'student', studentId, student.fullName);
     });
+});
+
+$(document.body).on('assign:added', function() {
+    $('.mark-task').empty();
+    var tasks = SHRI.Tasks.getAll(),
+        students = SHRI.Students.getAll(),
+        teams = SHRI.Teams.getAll();
+        randomTaskId = Math.floor(Math.random() * tasks.length);
+
+    $('.assign-task__select [value="' + randomTaskId + '"]')
+    .attr("selected", "selected");
+
+    for (var i = 0; i < 2; i++) {
+
+        var randomTeamId = Math.floor(Math.random() * teams.length),
+            randomStudentId = Math.floor(Math.random() * students.length);
+
+        $('.assign-task__content-teams [value="' + randomTeamId + '"]')
+        .attr("checked", true);
+
+        $('.assign-task__ul-students [value="' + randomStudentId + '"]')
+        .attr("checked", true);
+    }
+
+    $('.assign-task__button').click();
 });
 
 $('.mark-task').on('click', '.task-container__button', function(e) {
@@ -65,15 +97,20 @@ $('.mark-task').on('click', '.task-container__button', function(e) {
         taskId = +container.find('.task-container__task').data('task'),
         task = SHRI.Tasks.get(taskId);
 
+    if (markValue < 1 || markValue > 5) {
+        alert ('Выставьте оценку от 1 до 5');
+        return;
+    }
+
     if (type === 'team') {
         assignee = SHRI.Teams.find(assigneeId);
     } else {
         assignee = SHRI.Students.find(assigneeId);
     }
 
-    for (var i = 0; i < assignee.tasks.length; i++) {
-        if (task.taskName == assignee.tasks[i].task.taskName) {
-            assignee.tasks[i].mark = markValue;
+    for (var i = 0; i < assignee._tasks.length; i++) {
+        if (task.taskName == assignee._tasks[i].task.taskName) {
+            assignee._tasks[i].mark = markValue;
         }
     }
 
@@ -85,3 +122,13 @@ $('.mark-task').on('click', '.task-container__button', function(e) {
 
     e.preventDefault();
 });
+
+//TODO переименовать или реализовать по другому.
+function assignMarkk() {
+    $('.task-container__input-group input').eq(0).val(Math.floor(1 + Math.random() * 5));
+    $('.task-container__input-group button').eq(0).click()
+
+    $('.task-container__input-group input').eq(1).val(Math.floor(1 + Math.random() * 5));
+    $('.task-container__input-group button').eq(1).click()
+}
+//

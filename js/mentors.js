@@ -1,9 +1,12 @@
+;(function() {
+
 $('.load-mentors').on('click', function() {
     // Создаём менторов
     SHRI.Mentors.delete();
     SHRI.Mentors.add('Николай', 'Николаев');
     SHRI.Mentors.add('Максим', 'Максимов');
     SHRI.Mentors.add('Константин', 'Константинов');
+    SHRI.Mentors.add('Петр', 'Петров');
 
     var mentors = SHRI.Mentors.getAll(),
         students = SHRI.Students.getAll();
@@ -52,7 +55,7 @@ function renderLines(mentors, students) {
         var studentMentors = students[i].getMentors();
         for (var j = 0 ; j < studentMentors.length; j++) {
             var mentorIndex = SHRI.Mentors.getId(studentMentors[j]),
-                mentorBlock = $('.mentors-list__item[data-id=' + mentorIndex + ']');
+                mentorBlock = $('.mentors-list__item[data-id="' + mentorIndex + '"]');
 
             item.line(
                 0,
@@ -63,7 +66,6 @@ function renderLines(mentors, students) {
             );
         }
     }
-
 }
 
 function renderProtege(mentorProtege) {
@@ -94,3 +96,5 @@ $('.form-mentor').on('submit', function(event) {
 
     event.preventDefault();
 });
+
+}());

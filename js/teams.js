@@ -27,26 +27,45 @@ $('.create-teams').on('submit', function(event) {
         team = SHRI.Teams.create(teamName);
 
     if (team) {
-        var teamId = SHRI.Teams.getTeamId(team);
+        Object.keys(studentsToAdd).forEach(function(studentId) {
+            var student = SHRI.Students.find(+studentId);
+            team.addMember(student);
+        });
 
+
+    } else {
+        alert('Ошибка при создании команды, т.к.\n' + 'такая команда уже есть.');
+        return;
+    }
+    $(document.body).trigger('team:added');
+});
+
+// 
+$(document.body).on('team:added', function() {
+    $('.assign-task__content-teams').empty();
+    $('.create-teams__div-teams').empty();
+    var teams = SHRI.Teams.getAll();
+
+    for (var i = 0; i < teams.length; i++) {
         $('<legend>' +
               '<label>' +
-                '<input type="checkbox" value="' + teamId + '"/>' +
-                 SHRI.Teams._teams[SHRI.Teams._teams.length - 1].teamName +
+                '<input type="checkbox" value="' + i + '"/>' +
+                 teams[i].teamName +
               '</label>' +
           '</legend>')
         .appendTo('.assign-task__content-teams');
 
-        var membersList = $('<ul class="create-teams__ul"></ul>');
+        $('<label>' + teams[i].teamName + '</label>').appendTo('.create-teams__div-teams');
 
-        Object.keys(studentsToAdd).forEach(function(studentId) {
-            var student = SHRI.Students.find(+studentId);
-            team.addMember(student);
-            membersList.append('<li>' + student.fullName + '</li>') 
-        });
+        var members = teams[i].getAllMembers(),
+            membersList = $('<ul class="create-teams__ul"></ul>');
+
+        for (var j = 0; j < members.length; j++) {
+            membersList.append('<li>' + members[j].fullName + '</li>');
+        }
 
         membersList.appendTo('.assign-task__content-teams');
-    } else {
-        alert('Ошибка при создании команды, т.к.\n' + 'такая команда уже есть.');
+        membersList.clone().appendTo('.create-teams__div-teams');
     }
+
 });
