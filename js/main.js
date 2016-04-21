@@ -69,7 +69,7 @@ $('.load-students').on('click', function() {
     }
 
     $(document.body).trigger('task:added');
-//    $(document.body).trigger('assign:added');
+
 });
 
 $('.nav-tabs a').click(function (e) {

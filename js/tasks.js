@@ -60,31 +60,6 @@ $('.assign-task').on('submit', function(event) {
     });
 });
 
-$(document.body).on('assign:added', function() {
-    $('.mark-task').empty();
-    var tasks = SHRI.Tasks.getAll(),
-        students = SHRI.Students.getAll(),
-        teams = SHRI.Teams.getAll();
-        randomTaskId = Math.floor(Math.random() * tasks.length);
-
-    $('.assign-task__select [value="' + randomTaskId + '"]')
-    .attr("selected", "selected");
-
-    for (var i = 0; i < 2; i++) {
-
-        var randomTeamId = Math.floor(Math.random() * teams.length),
-            randomStudentId = Math.floor(Math.random() * students.length);
-
-        $('.assign-task__content-teams [value="' + randomTeamId + '"]')
-        .attr("checked", true);
-
-        $('.assign-task__ul-students [value="' + randomStudentId + '"]')
-        .attr("checked", true);
-    }
-
-    $('.assign-task__button').click();
-});
-
 $('.mark-task').on('click', '.task-container__button', function(e) {
     var button = $(this),
         type = button.data('type'),
