@@ -1,4 +1,5 @@
-$('.load-students').on('click', function() {
+// Генерирует данные для демонстрации
+$('.load-data').on('click', function() {
 
     //Загружаем список студентов
     SHRI.Students.delete();
@@ -27,6 +28,7 @@ $('.load-students').on('click', function() {
     var students = SHRI.Students.getAll(),
         teams = SHRI.Teams.getAll();
 
+    // Распределяем студентов по командам.
     teams[0].addMember(students[0]);
     teams[0].addMember(students[1]);
     teams[0].addMember(students[2]);
@@ -47,26 +49,26 @@ $('.load-students').on('click', function() {
     SHRI.Tasks.create('Задача3', 'Подпрыгнуть 30 раз');
     SHRI.Tasks.create('Задача4', 'Подпрыгнуть 40 раз');
 
+    // Рандомно выбирает команду/студента, назначает рандомно задачу
+    // и выставляет рандомную оценку.
     $('.mark-task').empty();
-    for (var i = 0; i < 2; i++) {
+    for (var i = 0; i < Math.floor(Math.random() * 4 + 1); i++) {
         var tasks = SHRI.Tasks.getAll(),
             randomTeamId = Math.floor(Math.random() * teams.length),
             randomStudentId = Math.floor(Math.random() * students.length),
             randomTaskId = Math.floor(Math.random() * tasks.length),
             task = SHRI.Tasks.get(randomTaskId),
-            student = SHRI.Students.find(randomStudentId),
-            team = SHRI.Teams.find(randomTeamId);
+            student = SHRI.Students.getStudent(randomStudentId),
+            team = SHRI.Teams.getTeam(randomTeamId);
 
         blockAssignMark(randomTaskId, task.taskName, 'student', randomStudentId, student.fullName);
 
         randomTaskId = Math.floor(Math.random() * tasks.length);
         task = SHRI.Tasks.get(randomTaskId);
         blockAssignMark(randomTaskId, task.taskName, 'team', randomTeamId, team.teamName);
-
-        if (i == 0) {
-            assignMarkk();
-        }
     }
+
+    estimate();
 
     $(document.body).trigger('task:added');
 

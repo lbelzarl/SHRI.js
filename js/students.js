@@ -1,3 +1,4 @@
+// добавляет стундета через форму
 $('.form-student').on('submit', function(event) {
     var firstName = $('.form-student__firstName').val();
     var lastName = $('.form-student__lastName').val();
@@ -11,6 +12,7 @@ $(document.body).on('student:added', function() {
     $('.assign-task__ul-students').empty();
     $('.create-teams__select').empty();
     $('.form-student__ul-students').empty();
+    $('.form-student__div-students').show();
     var students = SHRI.Students.getAll();
 
     for (var i = 0; i < students.length; i++) {

@@ -26,11 +26,11 @@
 
         /**
          * Находит студента в массиве _students по его положению в нем.
-         * @param {Number} id - номер студента в массиве _students. 
+         * @param {Number} idStudent - номер студента в массиве _students. 
          * @return {Student} - Объект студент.
          */
-        find: function(id) {
-            return this._students[id];
+        getStudent: function(idStudent) {
+            return this._students[idStudent];
         },
 
         /**
@@ -98,7 +98,7 @@
             var students = this._students;
 
             for (var i = 0; i < students.length; i++) {
-                students[i].emptyMentors();
+                students[i].deleteMentors();
             }
         },
 
@@ -148,6 +148,10 @@
         this._mentors.push(mentor);
     }
 
+    /**
+     * Добавляет назначеную задачу в массив задач( _tasks ) студента.
+     * @param {Task} task Задача.
+     */
     Student.prototype.addTask = function(task) {
         this._tasks.push({
             task: task,
@@ -155,6 +159,11 @@
         });
     }
 
+    /**
+     * Выставляет оценку за задачу.
+     * @param  {Task} task - задача
+     * @param  {Number} mark - оценка
+     */
     Student.prototype.assignMark = function(task, mark) {
         for (var i = 0; i < this._tasks.length; i++) {
             if (task == this._tasks[i].task) {
@@ -172,11 +181,18 @@
     }
 
     /**
-     * Очищает массив менторов в которых заинтересован студент
+     * При вызове без переметров удаляет всех студентов,
+     * иначе удаляет указанного студента. 
+     * @param {Number} [id] - номер студента в массиве _students.
      */
-    Student.prototype.emptyMentors = function() {
-        this._mentors = [];
+    Student.prototype.deleteMentors = function(id) {
+        if (id === undefined) {
+            this._mentors = [];
+        } else {
+            this._mentors.splice(id, 1);
+        }
     }
+
 
     //------------------Команды----------------------------------------------
 
@@ -190,22 +206,27 @@
         _teams: [],
 
         /**
-         * Ищет команду.
-         * @param {String|Number} team - Название команды либо ее индекс в массиве
+         * Ищет команду по ее названию.
+         * @param {String} teamName - Название команды
          * @return {Team|null} При успешном поиске возвращает саму команду иначе null.
          */
-        find: function(team) {
-            if (typeof(team) === 'number') {
-                return this._teams[team];
-            }
-
+        find: function(teamName) {
             for (var i = 0; i < this._teams.length; i++) {
-                if (team === this._teams[i].teamName) {
+                if (teamName === this._teams[i].teamName) {
                     return this._teams[i];
                 }
             }
 
             return null;
+        },
+
+        /**
+         * Возвращает команду по ее индексу.
+         * @param {Number} idTeam - индекс команды в массиве
+         * @return {Team} Возвращает команду 
+         */
+        getTeam: function(idTeam) {
+            return this._teams[idTeam];
         },
 
         /**
@@ -224,7 +245,7 @@
         },
 
         /**
-         * Возвращает индекс команды в массиве _teams
+         * На вход принимает команду и возвращает ее индекс в массиве _teams
          * @param {Team} team - объект команды
          * @return {Number|Null} - Возвращает индекс команды в массиве _teams, а при его отсутствии - null.
          */
@@ -252,22 +273,16 @@
         },
 
         /**
-         * При вызове без параметров удаляет все команды.
-         * Иначе удаляет указанною в параметре команду.
-         * @param {String} teamName - Название команды.
+         * Удаляет все команды, либо удаляет указанную
+         * @param {Number} idTeam - Индекс команды в массиве команд
          */
-        delete: function(teamName) {
-            if (teamName === undefined) {
+        delete: function(idTeam) {
+            if (idTeam === undefined) {
                 this._teams = [];
                 return;
             }
 
-            var team = this.find(teamName),
-                teamIndex = this.getTeamId(team);
-
-            if (teamIndex > 0) {
-                this._teams.splice(teamIndex, 1);
-            }
+            this._teams.splice(idTeam, 1);
         },
 
         /**
@@ -330,7 +345,7 @@
     }
 
     /**
-     * Возвращает всех студентов в комаде 
+     * Возвращает всех студентов комады 
      * @return {Array} - массив всех студентов в команде
      */
     Team.prototype.getAllMembers = function() {
@@ -351,11 +366,10 @@
         ];
     }
 
-        /**
-         * При вызове без аргумента удаляет всех студентов из команды
-         * При вызове с аргументом удаляет указанного студента из команды
-         * @param {Student} - Студент
-         */
+    /**
+     * Удаляет всех студентов из команды, либо удаляет только заданного
+     * @param {Student} - Студент
+     */
     Team.prototype.delMember = function(student) {
         if (student === undefined) {
             this._members = [];
@@ -372,6 +386,10 @@
         return false;
     }
 
+    /**
+     * Добавляет задачу команде
+     * @param {Task} task - задача
+     */
     Team.prototype.addTask = function(task) {
         this._tasks.push({
             task: task,
@@ -379,6 +397,11 @@
         });
     }
 
+    /**
+     * Выставляет оценку за задачу
+     * @param  {Task} task задача
+     * @param  {Number} mark - оценка
+     */
     Team.prototype.assignMark = function(task, mark) {
         for (var i = 0; i < this._tasks.length; i++) {
             if (task == this._tasks[i].task) {
@@ -400,7 +423,7 @@
         _tasks: [],
 
         /**
-         * Создает задачу
+         * Добавляет новую задачу в массив задач
          * @param {String} tasksName - Наиманование задачи.
          * @param {String} description - Подробное описание задачи.
          * @return {Number} Возвращает индекс в массиве _tasks.
@@ -423,7 +446,7 @@
          * Возвращает индекс задачи в массиве _tasks.
          * @param {Task} task - задача.
          * @return {Number|Null} - Возвращает индекс задачи в массиве _tasks
-         *                                                 а при его отсутствии - null.
+         *                                      а при его отсутствии - null.
          */
         getId: function(task) {
             for (var i = 0; i < this._tasks.length; i++) {
@@ -444,8 +467,7 @@
         },
 
         /**
-         * При вызове без переметров удаляет все задачи,
-         * иначе удаляет указанную задачу. 
+         * Удаляет все задачи, либо удаляет указанную задачу. 
          * @param {Number} [id] - индекс задачи в массиве _tasks.
          */
         delete: function(id) {
@@ -468,6 +490,10 @@
         this.description = description;
     }
 
+    /**
+     * Сериализует задачу в массив
+     * @return {Array}
+     */
     Task.prototype.serialize = function() {
         return [this.taskName, this.description];
     }
@@ -508,7 +534,7 @@
          * @param  {Number} индекс массива _mentors
          * @return {Mentor}   
          */
-        find: function(id) {
+        getMentor: function(id) {
             return this._mentors[id];
         },
 
@@ -516,7 +542,7 @@
          * Возвращает индекс ментора в массиве _mentors.
          * @param {Mentor} mentor - Ментор.
          * @return {Number|Null} - Возвращает индекс ментора в массиве _mentors
-         *                                                 а при его отсутствии - null.
+         *                                          а при его отсутствии - null
          */
         getId: function(mentor) {
             for (var i = 0; i < this._mentors.length; i++) {
@@ -528,8 +554,7 @@
         },
 
         /**
-         * При вызове без переметров удаляет всех менторов,
-         * иначе удаляет указанного ментора. 
+         * Удаляет всех менторов, либо указанного. 
          * @param {Number} [id] - индекс ментора в массиве _mentors.
          */
         delete: function(id) {
@@ -546,6 +571,10 @@
          * @param {Array} [students] - массив студентов.
          */
         assignStudents: function(students) {
+            if (!students.length) {
+                return;
+            }
+
             var mentors = this._mentors;
 
             for (var i = 0; i < mentors.length; i++) {
@@ -592,10 +621,15 @@
     }
 
     /**
-     * Очищает массив студентов в которых заинтересован ментор
+     * Удаляет всех студентов у ментора, либо удаляет только заданного
+     * @param {Nember} [idStudent] Индекс студента в массиве студентов
      */
-    Mentor.prototype.emptyStudents = function() {
-        this._students = [];
+    Mentor.prototype.deleteStudents = function(idStudent) {
+        if (id === undefined) {
+            this._students = [];
+        } else {
+            this._students.splice(idStudent, 1) ;
+        }
     }
 
     /**
@@ -609,7 +643,10 @@
     }
 
     /**
-     * TODO
+     * Возвращает массив распределения студентов среди менторов 
+     * в соответствии с приоритизированными списками. 
+     * @param {Mentor} mentor - Ментор
+     * @param {Student} student - Студент
      */
     function assign(mentors, students) {
         var mentorProtege = [];
@@ -693,7 +730,7 @@
         for (var i = 0; i < source.students.length; i++) {
             var studentParam = source.students[i],
                 studentId = Students.add(studentParam[0], studentParam[1]),
-                student = Students.find(i),
+                student = Students.getStudent(i),
                 tasks = source.students[i][2];
 
             for (var j = 0; j < tasks.length; j++) {
@@ -710,7 +747,7 @@
                 tasks = source.students[i][2];
 
             for (var j = 0; j < teamMembers.length; j++) {
-                team.addMember(Students.find(teamMembers[j]));
+                team.addMember(Students.getStudent(teamMembers[j]));
             }
 
             for (var j = 0; j < tasks.length; j++) {
@@ -723,20 +760,20 @@
         for (var i = 0; i < source.mentors.length; i++) {
             var mentorParams = source.mentors[i],
                 mentorId = Mentors.add(mentorParams[0], mentorParams[1]),
-                mentor = Mentors.find(mentorId),
+                mentor = Mentors.getMentor(mentorId),
                 protege = mentorParams[2];
 
             for (var j = 0; j < protege.length; j++) {
-                mentor.addStudent(Students.find(protege[j]));
+                mentor.addStudent(Students.getStudent(protege[j]));
             }
         }
 
         for (var i = 0; i < source.students.length; i++) {
-            var student = Students.find(i),
+            var student = Students.getStudent(i),
                 mentors = source.students[i][3];
 
             for (var j = 0; j < mentors.length; j++) {
-                student.addMentor(Mentors.find(mentors[j]));
+                student.addMentor(Mentors.getMentor(mentors[j]));
             }
         }
     }

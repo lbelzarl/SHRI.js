@@ -23,6 +23,7 @@ SHRI.Teams.shuffle();
 var students = SHRI.Students.getAll(),
     teams = SHRI.Teams.getAll();
 
+// Формируем команды
 teams[0].addMember(students[0]);
 teams[0].addMember(students[1]);
 teams[0].addMember(students[2]);
@@ -42,10 +43,12 @@ SHRI.Tasks.create('Задача4', 'Подпрыгнуть 40 раз');
 
 var tasks = SHRI.Tasks.getAll();
 
+// Распределяем задачи
 students[0].addTask(tasks[0]);
 students[2].addTask(tasks[1]);
 teams[3].addTask(tasks[2]);
 
+// Выставляем оценки за задачи
 students[0].assignMark(tasks[0], 5);
 students[2].assignMark(tasks[1], 4);
 teams[3].assignMark(tasks[2], 1);

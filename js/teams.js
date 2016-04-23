@@ -10,7 +10,7 @@ $('.create-teams').on('submit', function(event) {
     // Собираем массив студентов, кто уже в команде
     var studentsInTeam = [];
     Object.keys(studentsToAdd).forEach(function(studentId) {
-        var student = SHRI.Students.find(+studentId),
+        var student = SHRI.Students.getStudent(+studentId),
             studentTeam = SHRI.Teams.getMemberTeam(student);
 
         if (studentTeam !== null) {
@@ -23,27 +23,30 @@ $('.create-teams').on('submit', function(event) {
         return;
     }
 
+    //Пробует создать команду с введеным названием
     var teamName = $('.create-teams__name').val(),
         team = SHRI.Teams.create(teamName);
 
+    // При успешной создании команды добавляет выбранных студентов в команду
+    // иначе выдаст оповещание.
     if (team) {
         Object.keys(studentsToAdd).forEach(function(studentId) {
-            var student = SHRI.Students.find(+studentId);
+            var student = SHRI.Students.getStudent(+studentId);
             team.addMember(student);
         });
-
-
     } else {
         alert('Ошибка при создании команды, т.к.\n' + 'такая команда уже есть.');
         return;
     }
+
     $(document.body).trigger('team:added');
 });
 
-// 
+// Выводит список команд с его участниками.
 $(document.body).on('team:added', function() {
     $('.assign-task__content-teams').empty();
     $('.create-teams__div-teams').empty();
+    $('.create-teams__div-teams').show();
     var teams = SHRI.Teams.getAll();
 
     for (var i = 0; i < teams.length; i++) {

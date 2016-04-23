@@ -14,15 +14,19 @@
 
     <div class="container theme-showcase" role="main">
 
-        <button type="submit" class="btn btn-default load-students">Загрузить данные</button>
+        <div class="form-group">
+            <button type="submit" class="btn btn-success load-data">Загрузить данные</button>
+        </div>
 
         <div>
             <!-- Nav tabs -->
-            <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation" class="active"><a href="#create" aria-controls="create" role="tab" data-toggle="tab">Создание студентов, команд, задач</a></li>
-                <li role="presentation"><a href="#assign" aria-controls="assign" role="tab" data-toggle="tab">Назначение задач и выставление оценок</a></li>
-                <li role="presentation"><a href="#mentors" aria-controls="mentors" role="tab" data-toggle="tab">Менторы и распределение студентов</a></li>
-            </ul>
+            <div class="form-group">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#create" aria-controls="create" role="tab" data-toggle="tab">Создание студентов, команд, задач</a></li>
+                    <li role="presentation"><a href="#assign" aria-controls="assign" role="tab" data-toggle="tab">Назначение задач и выставление оценок</a></li>
+                    <li role="presentation"><a href="#mentors" aria-controls="mentors" role="tab" data-toggle="tab">Менторы и распределение студентов</a></li>
+                </ul>
+            </div>
             <!-- Tab panes -->
             <div class="tab-content">
 
@@ -44,8 +48,13 @@
                                         <input name="lastName" class="form-control form-student__lastName" />
                                     </label>
                                 </div>
-                                <button type="submit" class="btn form-student__button">Добавить студента</button>
-                                <ul class="form-student__ul-students"></ul>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary form-student__button">Добавить студента</button>
+                                </div>
+                                <div class="form-student__div-students" style="display: none">
+                                    <p>Список студентов</p>
+                                    <ul class="form-student__ul-students"></ul>
+                                </div>
                             </form>
                         </div>
                         <div class="col-md-4">
@@ -64,8 +73,12 @@
                                         </select>
                                     </label>
                                 </div>
-                                <button type="submit" class="btn create-teams__button">Создать команду</button>
-                                <div class="create-teams__div-teams"></div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary create-teams__button">Создать команду</button>
+                                </div>
+                                <div class="create-teams__div-teams" style="display: none">
+                                    <p>Список команд</p>
+                                </div>
                             </form>
                         </div>
                         <div class="col-md-4">
@@ -83,8 +96,13 @@
                                         <textarea name="team-name" class="form-control create-task__description"></textarea>
                                     </label>
                                 </div>
-                                <button type="submit" class="btn create-task__button">Создать задачу</button>
-                                <ul class="create-task__ul-task"></ul>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary create-task__button">Создать задачу</button>
+                                </div>
+                                <div class="create-task__div-task" style="display: none">
+                                    <p>Список задач</p>
+                                    <ul class="create-task__ul-task"></ul>
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -116,7 +134,9 @@
                                     <ul class="assign-task__ul-students"></ul>
                                 </div>
                             </div>
-                            <button type="submit" class="btn assign-task__button">Назначить задачу</button>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary assign-task__button">Назначить задачу</button>
+                            </div>
                         </form>
                     </div>
 
@@ -125,8 +145,8 @@
                 </div>
 
                 <div role="tabpanel" class="tab-pane" id="mentors">
-                    <div class="lines">
-                        <button type="submit" class="btn btn-default load-mentors">Загрузить менторов</button>
+                    <div class="form-group lines">
+                        <button type="submit" class="btn btn-primary load-mentors">Загрузить менторов</button>
                         <h2>Работа с менторами</h2>
 
                         <div class="lines__wrapper">
