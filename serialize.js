@@ -1,4 +1,4 @@
-var SHRI = require('./js/SHRI.js');
+var SHRI = require('./SHRI.js');
 
 // Создаём студентов
 SHRI.Students.add('Вася', 'Васечкин');

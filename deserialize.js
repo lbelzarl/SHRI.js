@@ -1,4 +1,4 @@
-var SHRI = require('./js/SHRI.js');
+var SHRI = require('./SHRI.js');
 
 var source = {
     "students": [
